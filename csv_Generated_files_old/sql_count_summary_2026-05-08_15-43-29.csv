@@ -1,0 +1,10 @@
+tenant,application,list_count,sql_count,difference,status
+barik,observations,99,99,0,PASS
+barik,actionmanagements,283,287,-4,FAIL
+barik,auditsmanagements,101,5,96,FAIL
+barik,hsemonthlystatistics,7,7,0,PASS
+barik,incidentmanagement,65,67,-2,FAIL
+barik,inspectionmanagements,109,109,0,PASS
+barik,meetingmanagements,26,26,0,PASS
+barik,permittoworks,40,40,0,PASS
+barik,riskmanagements,14,0,14,FAIL

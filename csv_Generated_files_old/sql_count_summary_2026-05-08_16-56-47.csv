@@ -1,0 +1,5 @@
+tenant,application,list_count,sql_count,difference,status
+ndsc,observations,124,125,-1,FAIL
+ndsc,auditsmanagements,79,79,0,PASS
+ndsc,riskmanagements,60,64,-4,FAIL
+ndsc,ofis,96,107,-11,FAIL

@@ -1,0 +1,12 @@
+tenant,application,list_count,sql_count,difference,status
+alsumri,observations,34,35,-1,FAIL
+alsumri,vehicle_inspections,-1,-1,0,SQL_NOT_CONFIGURED
+barik,observations,99,99,0,PASS
+oneic,observations,9,9,0,PASS
+sos,observations,960,1026,-66,FAIL
+omancables,observations,18,18,0,PASS
+albaraka,observations,10,10,0,PASS
+bunduq,observations,86,86,0,PASS
+synergies,observations,896,889,7,FAIL
+ndsc,observations,124,125,-1,FAIL
+ajbanpv3,observations,16,16,0,PASS

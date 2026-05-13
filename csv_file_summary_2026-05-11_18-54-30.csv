@@ -1,0 +1,7 @@
+tenant,application,list_count,sql_count,difference,status
+synergies,observations,905,896,9,FAIL
+synergies,actionmanagements,471,279,192,FAIL
+synergies,auditsmanagements,137,143,-6,FAIL
+synergies,hsemonthlystatistics,64,64,0,PASS
+synergies,incidentmanagement,83,83,0,PASS
+synergies,inspectionmanagements,98,98,0,PASS

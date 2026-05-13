@@ -1,0 +1,12 @@
+tenant,application,list_count,sql_count,difference,status
+sos,observations,960,1026,-66,FAIL
+sos,actionmanagements,999,1064,-65,FAIL
+sos,auditsmanagements,446,483,-37,FAIL
+sos,customercomplaints,-1,-1,0,FAIL
+sos,hsemonthlystatistics,6,6,0,PASS
+sos,incidentmanagement,585,608,-23,FAIL
+sos,inspectionmanagements,388,388,0,PASS
+sos,managementofchanges,-1,-1,0,FAIL
+sos,meetingmanagements,40,43,-3,FAIL
+sos,riskmanagements,57,57,0,PASS
+sos,surveymanagements,-1,-1,0,FAIL

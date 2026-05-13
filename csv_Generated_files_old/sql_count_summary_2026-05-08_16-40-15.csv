@@ -1,0 +1,10 @@
+tenant,application,list_count,sql_count,difference,status
+albaraka,observations,10,10,0,PASS
+albaraka,actionmanagements,63,63,0,PASS
+albaraka,auditsmanagements,35,35,0,PASS
+albaraka,hseplandetails,7,7,0,PASS
+albaraka,incidentmanagement,16,16,0,PASS
+albaraka,inspectionmanagements,26,26,0,PASS
+albaraka,managementofchanges,13,13,0,PASS
+albaraka,meetingmanagements,16,10,6,FAIL
+albaraka,surveymanagements,1,1,0,PASS
