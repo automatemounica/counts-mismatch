@@ -110,6 +110,10 @@
                         <i class="bi bi-diagram-3 me-1"></i> Demo
                         <span class="badge ms-1" id="demo-env-badge" style="background:#1a7a4a; font-size:0.6rem;">Active</span>
                     </label>
+                    <input type="radio" class="btn-check" name="instance" id="inst-dev" value="dev">
+                    <label class="btn btn-outline-primary btn-sm px-3" for="inst-dev">
+                        <i class="bi bi-code-slash me-1"></i> Dev
+                    </label>
                     <input type="radio" class="btn-check" name="instance" id="inst-prod" value="prod" disabled>
                     <label class="btn btn-outline-secondary btn-sm px-3" for="inst-prod"
                            title="Production config not yet configured" style="opacity:0.45; cursor:not-allowed;">
@@ -211,7 +215,7 @@
                         </div>
                         <div class="col-auto">
                             <label class="form-label small fw-semibold mb-1">Time (server local)</label>
-                            <input type="time" id="sched-time" class="form-control form-control-sm" value="08:00" style="width:120px;">
+                            <input type="time" id="sched-time" class="form-control form-control-sm" style="width:120px;">
                         </div>
                         <div class="col-auto">
                             <button class="btn btn-sm btn-primary px-3" onclick="addSchedule()">
@@ -855,9 +859,9 @@ function renderRecipients(data) {
         div.className = 'd-flex align-items-center gap-2 mb-1';
         div.innerHTML = `<i class="bi bi-envelope text-muted" style="font-size:0.78rem;"></i>
             <span style="font-size:0.83rem;">${esc(email)}</span>
-            <button class="btn btn-link text-danger p-0 ms-auto" style="font-size:0.75rem; line-height:1;"
-                    onclick="removeRecipient('${esc(email)}')">
-                <i class="bi bi-x-lg"></i>
+            <button class="btn btn-outline-danger btn-sm ms-auto px-2 py-0" style="font-size:0.72rem;"
+                    onclick="removeRecipient('${esc(email)}')" title="Remove recipient">
+                <i class="bi bi-trash3 me-1"></i>Remove
             </button>`;
         list.appendChild(div);
     });
@@ -901,12 +905,19 @@ function removeRecipient(email) {
 // --- Scheduler ---
 let schedulerOpen = false;
 
+function setSchedTimeNow() {
+    const now = new Date();
+    const hh = String(now.getHours()).padStart(2, '0');
+    const mm = String(now.getMinutes()).padStart(2, '0');
+    document.getElementById('sched-time').value = `${hh}:${mm}`;
+}
+
 function toggleScheduler() {
     schedulerOpen = !schedulerOpen;
     document.getElementById('scheduler-panel').style.display = schedulerOpen ? 'block' : 'none';
     document.getElementById('scheduler-chevron').className =
         schedulerOpen ? 'bi bi-chevron-up ms-1' : 'bi bi-chevron-down ms-1';
-    if (schedulerOpen) loadSchedules();
+    if (schedulerOpen) { loadSchedules(); setSchedTimeNow(); }
 }
 
 function onSchedTypeChange() {
@@ -965,7 +976,7 @@ function renderSchedules(list) {
                 <input class="form-check-input" type="checkbox" ${s.enabled ? 'checked' : ''}
                        onchange="toggleSchedule('${s.id}')" style="cursor:pointer;">
             </div>
-            <button class="btn btn-sm btn-link text-danger p-0" onclick="deleteSchedule('${s.id}')" title="Remove">
+            <button class="btn btn-sm btn-link text-danger p-0" onclick="deleteSchedule('${s.id}', '${scheduleLabel(s)}')" title="Remove">
                 <i class="bi bi-trash"></i>
             </button>
         </div>`).join('');
@@ -989,13 +1000,15 @@ function addSchedule() {
         } else {
             msg.textContent = 'Schedule added.'; msg.className = 'mt-2 text-success';
             loadSchedules();
+            setSchedTimeNow();
             setTimeout(() => { msg.textContent = ''; }, 3000);
         }
     })
     .catch(() => { msg.textContent = 'Failed — restart server and try again.'; msg.className = 'mt-2 text-danger'; });
 }
 
-function deleteSchedule(id) {
+function deleteSchedule(id, label) {
+    if (!confirm(`Remove schedule "${label}"?\nThis cannot be undone.`)) return;
     fetch(`/api/schedules/${id}`, { method: 'DELETE' })
         .then(() => loadSchedules());
 }

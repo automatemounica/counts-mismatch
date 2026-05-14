@@ -229,21 +229,28 @@ _runtime_tenants: dict = {}      # demo tenants (loaded at startup)
 _run_history: list[dict] = []    # up to 2 entries: {timestamp, rows, csv_path}
 
 
+_dev_tenants: dict = {}
+
+
 def _init_tenants():
-    global _runtime_tenants
+    global _runtime_tenants, _dev_tenants
     try:
-        _runtime_tenants = load_tenants_for_sql_mode()
-        print(f"[web_app] Loaded {len(_runtime_tenants)} tenants from Excel/JSON.")
+        _runtime_tenants = load_tenants_for_sql_mode(domain="demoehswatch.com")
+        print(f"[web_app] Loaded {len(_runtime_tenants)} demo tenants.")
     except Exception as exc:
-        print(f"[web_app] Excel load failed ({exc}). Using fallback TENANTS.")
+        print(f"[web_app] Demo Excel load failed ({exc}). Using fallback TENANTS.")
         _runtime_tenants = TENANTS
+    try:
+        _dev_tenants = load_tenants_for_sql_mode(domain="dev-ehswatch.com")
+        print(f"[web_app] Loaded {len(_dev_tenants)} dev tenants.")
+    except Exception as exc:
+        print(f"[web_app] Dev tenant load failed ({exc}). Dev instance unavailable.")
+        _dev_tenants = {}
 
 
 def _get_tenants_for_instance(instance: str) -> dict:
-    """Return the tenant map for the requested instance."""
-    if instance == "prod":
-        # Swap in prod tenants here once INSTANCE_CONFIG["prod"] is populated
-        return _runtime_tenants   # placeholder — same as demo until prod config arrives
+    if instance == "dev":
+        return _dev_tenants
     return _runtime_tenants
 
 
@@ -549,6 +556,32 @@ def download():
     )
 
 
+@app.route("/api/test-email", methods=["POST"])
+def test_email():
+    """Send a quick test email to verify SMTP config."""
+    if not EMAIL_PASSWORD:
+        return jsonify({"error": "EMAIL_PASSWORD not set in web_app.py"}), 503
+    to_list = _all_recipients()
+    if not to_list:
+        return jsonify({"error": "No recipients configured."}), 400
+    try:
+        msg = MIMEMultipart("mixed")
+        msg["Subject"] = "EHSWatch — SMTP Test"
+        msg["From"]    = EMAIL_FROM
+        msg["To"]      = ", ".join(to_list)
+        msg.attach(MIMEText("<p>This is a test email from EHSWatch scheduler.</p>", "html"))
+        with smtplib.SMTP(EMAIL_HOST, EMAIL_PORT) as server:
+            server.ehlo()
+            server.starttls()
+            server.login(EMAIL_USERNAME, EMAIL_PASSWORD)
+            server.sendmail(EMAIL_FROM, to_list, msg.as_string())
+        print(f"[email] Test email sent to {to_list}")
+        return jsonify({"status": "sent", "to": to_list})
+    except Exception as exc:
+        print(f"[email] Test FAILED: {exc}")
+        return jsonify({"error": str(exc)}), 500
+
+
 @app.route("/api/send-email", methods=["POST"])
 def send_email_report():
     if not EMAIL_PASSWORD:
@@ -593,6 +626,140 @@ def remove_recipient(email: str):
     _extra_recipients = [e for e in _extra_recipients if e.lower() != email.lower()]
     _save_recipients_file()
     return jsonify({"status": "removed", "extra": _extra_recipients})
+
+
+# ---------------------------------------------------------------------------
+# Scheduler
+# ---------------------------------------------------------------------------
+SCHEDULES_FILE = os.path.join(BASE_DIR, "schedules.json")
+_schedules: list[dict] = []
+_schedules_lock = threading.Lock()
+
+
+def _load_schedules() -> None:
+    global _schedules
+    try:
+        if os.path.exists(SCHEDULES_FILE):
+            with open(SCHEDULES_FILE, "r", encoding="utf-8") as f:
+                _schedules = json.load(f)
+    except Exception:
+        _schedules = []
+
+
+def _save_schedules() -> None:
+    try:
+        with open(SCHEDULES_FILE, "w", encoding="utf-8") as f:
+            json.dump(_schedules, f)
+    except Exception:
+        pass
+
+
+_scheduler_fired_minutes: set[str] = set()  # track already-fired "YYYY-MM-DD HH:MM"
+
+
+def _scheduler_loop() -> None:
+    """Background thread: fires validation when a schedule's time matches."""
+    while True:
+        time.sleep(20)
+        now = datetime.now()
+        day_name = now.strftime("%A").lower()
+        hhmm = now.strftime("%H:%M")
+        fire_key = now.strftime("%Y-%m-%d ") + hhmm  # unique per day+minute
+
+        with _schedules_lock:
+            scheds = list(_schedules)
+
+        # Clean up keys from previous minutes
+        current_keys = {now.strftime("%Y-%m-%d ") + s.get("time", "") for s in scheds}
+        _scheduler_fired_minutes.intersection_update(current_keys | {fire_key})
+
+        for s in scheds:
+            if not s.get("enabled", True):
+                continue
+            if s.get("time") != hhmm:
+                continue
+            if s.get("type") == "weekly" and s.get("day") != day_name:
+                continue
+            if fire_key in _scheduler_fired_minutes:
+                continue  # already fired this minute
+
+            print(f"[scheduler] Firing scheduled validation at {hhmm} (schedule id={s['id']})")
+            _scheduler_fired_minutes.add(fire_key)
+
+            with _state_lock:
+                global _validation_active, _stop_requested
+                if _validation_active:
+                    print("[scheduler] Skipped — validation already running.")
+                    continue
+                _validation_active = True
+                _stop_requested = False
+
+            job_id = str(uuid.uuid4())
+            q: queue.Queue = queue.Queue()
+            _job_queues[job_id] = q
+            tenant_names = list(_runtime_tenants.keys())
+
+            def _scheduled_run(jid, tnames):
+                _run_validation_job(jid, tnames, "demo")
+                _job_queues.pop(jid, None)  # clean up queue after done
+                print(f"[scheduler] Scheduled run {jid} complete.")
+
+            threading.Thread(
+                target=_scheduled_run,
+                args=(job_id, tenant_names),
+                daemon=True,
+            ).start()
+
+
+_load_schedules()
+threading.Thread(target=_scheduler_loop, daemon=True).start()
+
+
+@app.route("/api/schedules", methods=["GET"])
+def get_schedules():
+    with _schedules_lock:
+        return jsonify(list(_schedules))
+
+
+@app.route("/api/schedules", methods=["POST"])
+def add_schedule():
+    data = request.get_json(silent=True) or {}
+    stype = data.get("type", "daily")
+    stime = data.get("time", "").strip()
+    sday  = data.get("day", "monday").strip().lower()
+    if not stime:
+        return jsonify({"error": "Time is required."}), 400
+    new_sched = {
+        "id": str(uuid.uuid4()),
+        "type": stype,
+        "time": stime,
+        "day": sday,
+        "enabled": True,
+    }
+    with _schedules_lock:
+        _schedules.append(new_sched)
+        _save_schedules()
+        return jsonify(list(_schedules))
+
+
+@app.route("/api/schedules/<sched_id>", methods=["DELETE"])
+def delete_schedule(sched_id: str):
+    with _schedules_lock:
+        global _schedules
+        _schedules = [s for s in _schedules if s["id"] != sched_id]
+        _save_schedules()
+        return jsonify(list(_schedules))
+
+
+@app.route("/api/schedules/<sched_id>/toggle", methods=["POST"])
+def toggle_schedule(sched_id: str):
+    with _schedules_lock:
+        for s in _schedules:
+            if s["id"] == sched_id:
+                s["enabled"] = not s.get("enabled", True)
+                break
+        _save_schedules()
+        return jsonify(list(_schedules))
 
 
 if __name__ == "__main__":

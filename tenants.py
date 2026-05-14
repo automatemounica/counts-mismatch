@@ -56,6 +56,8 @@ MODULE_NAME_TO_APP_KEY: dict[str, str] = {
 }
 DEFAULT_AUTH_URL = "https://authserver.demoehswatch.com/connect/token"
 DEFAULT_API_GATEWAY_URL = "https://webgateway.demoehswatch.com"
+DEV_AUTH_URL = "https://authserver.dev-ehswatch.com/connect/token"
+DEV_API_GATEWAY_URL = "https://webgateway.dev-ehswatch.com"
 DEFAULT_CLIENT_ID = "EHSWatch_MobileApp"
 DEFAULT_CLIENT_SECRET = "Exceego@890"
 DEFAULT_SCOPE = (
@@ -547,6 +549,7 @@ def _load_tenant_modules_json(path: str = DEFAULT_TENANT_MODULES_JSON) -> dict[s
 def load_tenants_for_sql_mode(
     api_excel_path: str = DEFAULT_EXCEL_API_PATH,
     credentials_excel_path: str = DEFAULT_EXCEL_CREDENTIALS_PATH,
+    domain: str = "demoehswatch.com",
 ) -> dict[str, Any]:
     """
     Build tenant configuration for SQL-based count verification.
@@ -653,17 +656,19 @@ def load_tenants_for_sql_mode(
             print(f"[config] {tenant_name}: {len(global_apps)} app(s) (no JSON entry, using full catalog)")
 
     # 4) Apply auth defaults and drop tenants missing required fields.
+    auth_url     = f"https://authserver.{domain}/connect/token"
+    gateway_url  = f"https://webgateway.{domain}"
     required_for_token = ["username", "password"]
     sanitized: dict[str, Any] = {}
     for tenant_name, tenant in tenants.items():
         tenant.setdefault("name", tenant_name)
-        tenant.setdefault("auth_url", DEFAULT_AUTH_URL)
-        tenant.setdefault("api_gateway_url", DEFAULT_API_GATEWAY_URL)
+        tenant.setdefault("auth_url", auth_url)
+        tenant.setdefault("api_gateway_url", gateway_url)
         tenant.setdefault("client_id", DEFAULT_TOKEN_CONFIG["client_id"])
         tenant.setdefault("client_secret", DEFAULT_TOKEN_CONFIG["client_secret"])
         tenant.setdefault("scope", DEFAULT_TOKEN_CONFIG["scope"])
         if not tenant.get("base_url"):
-            tenant["base_url"] = f"https://{tenant_name}.demoehswatch.com"
+            tenant["base_url"] = f"https://{tenant_name}.{domain}"
         missing = [k for k in required_for_token if not _norm(tenant.get(k))]
         if missing:
             print(f"[config] Tenant skipped (missing token fields): tenant={tenant_name}, missing={missing}")
