@@ -12,129 +12,223 @@
             --ehs-green-dark: #145e38;
             --ehs-green-light: #e8f5ee;
         }
-        body { background: #f4f6f8; }
-        .navbar { background: var(--ehs-green) !important; }
-        .navbar-brand img { height: 38px; }
-        .navbar-title { color: #fff; font-weight: 600; font-size: 1.15rem; letter-spacing: 0.01em; }
-        .navbar-subtitle { color: rgba(255,255,255,0.75); font-size: 0.78rem; }
-        .card { border: none; box-shadow: 0 2px 8px rgba(0,0,0,0.07); border-radius: 10px; }
+        body { background: #f0f2f5; margin: 0; padding-bottom: 0; }
+
+        /* ── Navbar ── */
+        .top-nav {
+            background: var(--ehs-green);
+            height: 54px;
+            display: flex;
+            align-items: stretch;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+            position: sticky; top: 0; z-index: 1030;
+        }
+        .nav-brand {
+            display: flex; align-items: center; gap: 10px;
+            padding: 0 20px; color: #fff; font-weight: 700;
+            font-size: 1rem; text-decoration: none; white-space: nowrap;
+        }
+        .nav-brand:hover { color: #fff; }
+        .nav-brand .logo-box {
+            background: #fff; border-radius: 6px;
+            padding: 3px 7px; display: flex; align-items: center;
+        }
+        .page-nav { display: flex; align-items: stretch; }
+        .page-nav-link {
+            display: flex; align-items: center; gap: 6px;
+            padding: 0 18px; color: rgba(255,255,255,0.75);
+            font-size: 0.86rem; font-weight: 500;
+            text-decoration: none; cursor: pointer;
+            border-bottom: 3px solid transparent;
+            transition: all 0.15s; user-select: none;
+        }
+        .page-nav-link:hover { color: #fff; background: rgba(255,255,255,0.08); }
+        .page-nav-link.active { color: #fff; border-bottom-color: rgba(255,255,255,0.85); font-weight: 600; }
+        .nav-right { margin-left: auto; display: flex; align-items: center; gap: 12px; padding: 0 16px; }
+
+        /* ── Page sections ── */
+        .page-section { padding: 24px; min-height: calc(100vh - 54px); padding-bottom: 90px; }
+        .page-title { font-size: 1.2rem; font-weight: 700; color: #1a2e22; margin-bottom: 4px; }
+        .page-subtitle { color: #6c757d; font-size: 0.88rem; margin-bottom: 1.5rem; }
+        .section-title { font-size: 0.93rem; font-weight: 600; color: #344; margin-bottom: 0.75rem; }
+
+        /* ── Cards ── */
+        .card { border: none; box-shadow: 0 1px 6px rgba(0,0,0,0.07); border-radius: 10px; }
+
+        /* ── Buttons ── */
         .btn-primary { background: var(--ehs-green); border-color: var(--ehs-green); }
         .btn-primary:hover, .btn-primary:focus { background: var(--ehs-green-dark); border-color: var(--ehs-green-dark); }
         .btn-outline-primary { color: var(--ehs-green); border-color: var(--ehs-green); }
         .btn-outline-primary:hover { background: var(--ehs-green); border-color: var(--ehs-green); color: #fff; }
-        .btn-success { background: #198754; border-color: #198754; }
 
-        /* Stats */
-        .stat-card { text-align: center; padding: 1rem 0.5rem; }
-        .stat-number { font-size: 2.2rem; font-weight: 700; line-height: 1; }
-        .stat-label { color: #6c757d; font-size: 0.8rem; margin-top: 4px; }
-        .pass-rate { font-size: 2rem; font-weight: 700; color: #1a7a4a; line-height: 1; }
+        /* ── Instance tabs (card-header nav-tabs style) ── */
+        .inst-nav-tabs .nav-link {
+            color: #6c757d; font-weight: 500; font-size: 0.88rem;
+            padding: 10px 20px; border: none; border-bottom: 3px solid transparent;
+            background: none; cursor: pointer; transition: all 0.15s;
+        }
+        .inst-nav-tabs .nav-link:hover { color: var(--ehs-green); background: var(--ehs-green-light); }
+        .inst-nav-tabs .nav-link.active {
+            color: var(--ehs-green); font-weight: 700;
+            border-bottom: 3px solid var(--ehs-green);
+            background: none;
+        }
+        .inst-nav-tabs .nav-link.disabled-inst {
+            opacity: 0.4; cursor: not-allowed; pointer-events: none;
+        }
 
-        /* Log terminal */
+        /* ── Log terminal ── */
         #log-container {
-            background: #1a1a2e;
-            color: #a8d8a8;
-            font-family: 'Courier New', monospace;
-            font-size: 0.78rem;
-            height: 180px;
-            overflow-y: auto;
-            border-radius: 6px;
-            padding: 10px 14px;
+            background: #1a1a2e; color: #a8d8a8;
+            font-family: 'Courier New', monospace; font-size: 0.78rem;
+            height: 240px; overflow-y: auto; border-radius: 6px; padding: 10px 14px;
         }
         .log-entry { margin: 0; padding: 1px 0; white-space: pre-wrap; }
         .log-pass { color: #4ade80; }
         .log-fail { color: #f87171; }
         .log-info { color: #60a5fa; }
 
-        /* Table */
-        .table-pass td { background: #d1e7dd !important; }
-        .table-fail td { background: #f8d7da !important; }
-        .table-notrun td { background: #f0f0f0 !important; color: #888; }
-        .badge-pass    { background: #198754; font-size: 0.72rem; padding: 4px 8px; }
-        .badge-fail    { background: #dc3545; font-size: 0.72rem; padding: 4px 8px; }
-        .badge-notrun  { background: #6c757d; font-size: 0.72rem; padding: 4px 8px; }
-        .table > :not(caption) > * > * { vertical-align: middle; }
-        /* Tabs */
+        /* ── Sticky progress bar (fixed bottom) ── */
+        #sticky-progress {
+            position: fixed; bottom: 0; left: 0; right: 0; z-index: 1040;
+            background: #111827; border-top: 3px solid #27ae60;
+            padding: 8px 20px 10px; display: none;
+            box-shadow: 0 -4px 20px rgba(0,0,0,0.35);
+        }
+        #sticky-progress .sp-header {
+            display: flex; align-items: center; justify-content: space-between; margin-bottom: 4px;
+        }
+        #sticky-progress .sp-status {
+            color: #fff; font-size: 0.82rem; font-weight: 500;
+            font-family: 'Courier New', monospace;
+        }
+        #sticky-progress .sp-mini-log {
+            font-family: 'Courier New', monospace; font-size: 0.72rem;
+            color: #6ee7b7; max-height: 52px; overflow: hidden;
+            line-height: 1.45;
+        }
+
+        /* ── Dashboard tabs ── */
         .nav-tabs .nav-link { color: #555; font-weight: 500; }
         .nav-tabs .nav-link.active { color: var(--ehs-green); border-bottom-color: var(--ehs-green); font-weight: 600; }
 
+        /* ── Stats cards ── */
+        .stat-card { text-align: center; padding: 1rem 0.5rem; }
+        .stat-number { font-size: 2.2rem; font-weight: 700; line-height: 1; }
+        .stat-label { color: #6c757d; font-size: 0.8rem; margin-top: 4px; }
+        .pass-rate { font-size: 2rem; font-weight: 700; color: var(--ehs-green); line-height: 1; }
+
+        /* ── Results table ── */
+        .table-pass td { background: #d1e7dd !important; }
+        .table-fail td { background: #f8d7da !important; }
+        .table-notrun td { background: #f0f0f0 !important; color: #888; }
+        .badge-pass   { background: #198754; font-size: 0.72rem; padding: 4px 8px; }
+        .badge-fail   { background: #dc3545; font-size: 0.72rem; padding: 4px 8px; }
+        .badge-notrun { background: #6c757d; font-size: 0.72rem; padding: 4px 8px; }
+        .table > :not(caption) > * > * { vertical-align: middle; }
+
+        /* ── Reports page run cards ── */
+        .run-card { border-left: 4px solid var(--ehs-green) !important; }
+        .run-card.has-fail { border-left-color: #dc3545 !important; }
+
         .spinning { animation: spin 1s linear infinite; }
         @keyframes spin { to { transform: rotate(360deg); } }
-
-        .section-title { font-size: 0.95rem; font-weight: 600; color: #344; margin-bottom: 0.75rem; }
     </style>
 </head>
 <body>
 
-<!-- Navbar -->
-<nav class="navbar navbar-dark px-4 py-2">
-    <div class="container-fluid">
-        <div class="d-flex align-items-center gap-2">
-            <div style="background:#fff; border-radius:8px; padding:4px 8px; display:flex; align-items:center;">
-                <img src="/static/logo.png" alt="EHSWatch" style="height:38px;"
-                     onerror="this.style.display='none'; document.getElementById('nav-title').style.display='';">
-                <div id="nav-title" style="display:none; color:#1a7a4a; font-weight:700; font-size:1.1rem; padding:0 4px;">EHSWatch</div>
-            </div>
+<!-- ══════════════════════════ TOP NAVBAR ══════════════════════════ -->
+<div class="top-nav">
+    <!-- Brand -->
+    <a class="nav-brand" href="#">
+        <div class="logo-box">
+            <img src="/static/logo.png" alt="EHSWatch" style="height:30px;"
+                 onerror="this.style.display='none'; this.nextElementSibling.style.display='';">
+            <span style="display:none; color:#1a7a4a; font-weight:700; font-size:0.9rem; padding:0 2px;">EHS</span>
         </div>
-        <div id="spinner-wrap" class="text-white align-items-center gap-2" style="display:none;">
-            <i class="bi bi-arrow-repeat spinning"></i>
-            <span id="spinner-label" style="font-size:0.9rem; font-weight:500;">Validating...</span>
-        </div>
+        <span>EHSWatch <span style="font-weight:400; opacity:0.8; font-size:0.9rem;">Report Validation</span></span>
+    </a>
+
+    <!-- Page navigation -->
+    <nav class="page-nav ms-2">
+        <a class="page-nav-link active" data-page="run" onclick="showPage('run')">
+            <i class="bi bi-play-circle"></i> Run
+        </a>
+        <a class="page-nav-link" data-page="schedules" onclick="showPage('schedules')">
+            <i class="bi bi-clock"></i> Schedules
+        </a>
+        <a class="page-nav-link" data-page="reports" onclick="showPage('reports')">
+            <i class="bi bi-bar-chart-line"></i> Reports
+        </a>
+        <a class="page-nav-link" data-page="settings" onclick="showPage('settings')">
+            <i class="bi bi-gear"></i> Settings
+        </a>
+    </nav>
+
+    <!-- Right: logout -->
+    <div class="nav-right">
+        <a href="/logout" class="btn btn-sm btn-outline-light px-3" style="font-size:0.82rem;">
+            <i class="bi bi-box-arrow-right me-1"></i>Logout
+        </a>
     </div>
-</nav>
+</div>
 
-<div class="container-fluid px-4 py-4">
+<!-- ═══════════════════════════ PAGE: RUN ═══════════════════════════ -->
+<div id="page-run" class="page-section">
 
-    <!-- Welcome Banner -->
-    <div class="mb-4" style="background: linear-gradient(135deg, #1a7a4a 0%, #27ae60 100%); border-radius: 14px; padding: 2rem 2.5rem;">
+    <!-- Welcome banner -->
+    <div class="mb-4" style="background:linear-gradient(135deg,#1a7a4a,#27ae60); border-radius:14px; padding:1.5rem 2rem;">
         <div class="d-flex align-items-center gap-3">
-            <div style="background:rgba(255,255,255,0.15); border-radius:50%; width:54px; height:54px; display:flex; align-items:center; justify-content:center;">
-                <i class="bi bi-shield-check" style="font-size:1.6rem; color:#fff;"></i>
+            <div style="background:rgba(255,255,255,0.15); border-radius:50%; width:50px; height:50px; display:flex; align-items:center; justify-content:center;">
+                <i class="bi bi-shield-check" style="font-size:1.5rem; color:#fff;"></i>
             </div>
             <div>
-                <h3 class="fw-bold mb-1" style="color:#fff;">Welcome to EHSWatch Report Validation</h3>
-                <p style="color:rgba(255,255,255,0.8); margin:0; font-size:0.92rem;">Validate API vs SQL counts across all tenants and applications</p>
+                <h4 class="fw-bold mb-0" style="color:#fff; font-size:1.1rem;">Validate API vs SQL Counts</h4>
+                <p style="color:rgba(255,255,255,0.8); margin:0; font-size:0.85rem;">Run checks across all tenants and applications</p>
             </div>
         </div>
     </div>
 
-    <!-- Control Panel -->
+    <!-- Controls card -->
     <div class="card mb-4">
-        <div class="card-body">
-            <!-- Instance Selector -->
-            <div class="d-flex align-items-center gap-2 mb-4 pb-3 border-bottom">
-                <span class="fw-semibold text-muted small me-1">Instance:</span>
-                <div class="btn-group" role="group">
-                    <input type="radio" class="btn-check" name="instance" id="inst-demo" value="demo" checked>
-                    <label class="btn btn-outline-primary btn-sm px-3" for="inst-demo">
-                        <i class="bi bi-diagram-3 me-1"></i> Demo
-                        <span class="badge ms-1" id="demo-env-badge" style="background:#1a7a4a; font-size:0.6rem;">Active</span>
-                    </label>
-                    <input type="radio" class="btn-check" name="instance" id="inst-dev" value="dev">
-                    <label class="btn btn-outline-primary btn-sm px-3" for="inst-dev">
-                        <i class="bi bi-code-slash me-1"></i> Dev
-                    </label>
-                    <input type="radio" class="btn-check" name="instance" id="inst-prod" value="prod" disabled>
-                    <label class="btn btn-outline-secondary btn-sm px-3" for="inst-prod"
-                           title="Production config not yet configured" style="opacity:0.45; cursor:not-allowed;">
-                        <i class="bi bi-building-fill me-1"></i> Prod
-                        <span class="badge bg-secondary ms-1" style="font-size:0.6rem;">Soon</span>
-                    </label>
-                </div>
+        <!-- Instance selector as card-header tabs -->
+        <div class="card-header p-0 border-bottom bg-white" style="border-radius:10px 10px 0 0;">
+            <div class="d-flex align-items-center px-3">
+                <span class="text-muted small fw-semibold me-3" style="white-space:nowrap;">Instance</span>
+                <ul class="nav inst-nav-tabs mb-0">
+                    <li class="nav-item">
+                        <button class="nav-link active" data-inst="demo" onclick="selectInstance('demo')">
+                            <i class="bi bi-diagram-3 me-1"></i>Demo
+                        </button>
+                    </li>
+                    <li class="nav-item">
+                        <button class="nav-link" data-inst="dev" onclick="selectInstance('dev')">
+                            <i class="bi bi-code-slash me-1"></i>Dev
+                        </button>
+                    </li>
+                    <li class="nav-item">
+                        <button class="nav-link disabled-inst" data-inst="prod">
+                            <i class="bi bi-building me-1"></i>Prod
+                            <span class="badge bg-secondary ms-1" style="font-size:0.55rem; vertical-align:middle;">Soon</span>
+                        </button>
+                    </li>
+                </ul>
             </div>
+        </div>
 
-            <!-- Action Buttons -->
+        <div class="card-body">
+            <!-- Action buttons -->
             <div class="section-title"><i class="bi bi-sliders me-1"></i>Validation Controls</div>
             <div class="row g-3 mb-3">
                 <div class="col-auto">
                     <button id="btn-validate-all" class="btn btn-primary px-5 py-2" style="font-size:1rem;">
-                        <i class="bi bi-play-circle-fill me-2"></i> Validate All
+                        <i class="bi bi-play-circle-fill me-2"></i>Validate All
                     </button>
                     <div class="text-muted mt-1" style="font-size:0.75rem;">Run all tenants at once</div>
                 </div>
                 <div class="col-auto">
                     <button id="btn-validate-one" class="btn btn-outline-primary px-5 py-2" style="font-size:1rem;">
-                        <i class="bi bi-building me-2"></i> Validate One
+                        <i class="bi bi-building me-2"></i>Validate One
                     </button>
                     <div class="text-muted mt-1" style="font-size:0.75rem;">Pick a single tenant</div>
                 </div>
@@ -145,310 +239,396 @@
                 </div>
                 <div class="col-auto" id="run-one-area" style="display:none;">
                     <button id="btn-run-one" class="btn btn-success px-4 py-2" style="font-size:1rem;">
-                        <i class="bi bi-lightning-fill me-1"></i> Run
+                        <i class="bi bi-lightning-fill me-1"></i>Run
                     </button>
                 </div>
                 <div class="col-auto" id="stop-area" style="display:none;">
                     <button id="btn-stop" class="btn btn-danger px-4 py-2" style="font-size:1rem;">
-                        <i class="bi bi-stop-circle me-1"></i> Stop
+                        <i class="bi bi-stop-circle me-1"></i>Stop
                     </button>
                 </div>
             </div>
 
-            <!-- App badges for selected tenant -->
+            <!-- Apps display + tenant last status -->
             <div id="apps-display" class="mt-2 pt-3 border-top" style="display:none;">
-                <div class="text-muted small fw-semibold mb-1">Applications in this tenant:</div>
+                <div class="d-flex align-items-center gap-2 mb-2">
+                    <div class="text-muted small fw-semibold">Applications in this tenant:</div>
+                    <div id="tenant-last-status-badge"></div>
+                </div>
                 <div id="apps-badges" class="d-flex flex-wrap gap-1"></div>
             </div>
 
-            <!-- Show Last Run + Recipients -->
-            <div class="mt-3 pt-2 border-top d-flex align-items-start justify-content-between flex-wrap gap-2">
-                <button id="btn-last-run" class="btn btn-link text-muted p-0" style="font-size:0.85rem;">
-                    <i class="bi bi-clock-history me-1"></i> Show Last Run
+            <!-- View reports link -->
+            <div class="mt-3 pt-2 border-top">
+                <button id="btn-last-run" class="btn btn-link text-muted p-0" style="font-size:0.85rem;"
+                        onclick="showPage('reports')">
+                    <i class="bi bi-bar-chart-line me-1"></i>View Reports
                 </button>
-                <div class="text-end">
-                    <button class="btn btn-link text-muted p-0" style="font-size:0.85rem;"
-                            onclick="toggleRecipients()">
-                        <i class="bi bi-people me-1"></i> Email Recipients
-                        <i class="bi bi-chevron-down ms-1" id="recipients-chevron" style="font-size:0.7rem;"></i>
-                    </button>
-                </div>
-            </div>
-
-            <!-- Scheduler toggle -->
-            <div class="mt-2 text-end">
-                <button class="btn btn-link text-muted p-0" style="font-size:0.85rem;"
-                        onclick="toggleScheduler()">
-                    <i class="bi bi-clock me-1"></i> Scheduler
-                    <i class="bi bi-chevron-down ms-1" id="scheduler-chevron" style="font-size:0.7rem;"></i>
-                </button>
-            </div>
-
-            <!-- Scheduler Panel -->
-            <div id="scheduler-panel" class="mt-3 p-3 border rounded bg-light" style="display:none;">
-                <div class="section-title mb-3"><i class="bi bi-clock me-1"></i>Scheduled Runs — Validate All</div>
-
-                <!-- Existing schedules -->
-                <div id="schedules-list" class="mb-3"></div>
-
-                <!-- Add schedule form -->
-                <div class="border-top pt-3">
-                    <div class="row g-2 align-items-end">
-                        <div class="col-auto">
-                            <label class="form-label small fw-semibold mb-1">Type</label>
-                            <select id="sched-type" class="form-select form-select-sm" onchange="onSchedTypeChange()" style="width:110px;">
-                                <option value="daily">Daily</option>
-                                <option value="weekly">Weekly</option>
-                            </select>
-                        </div>
-                        <div class="col-auto" id="sched-day-wrap" style="display:none;">
-                            <label class="form-label small fw-semibold mb-1">Day</label>
-                            <select id="sched-day" class="form-select form-select-sm" style="width:120px;">
-                                <option value="monday">Monday</option>
-                                <option value="tuesday">Tuesday</option>
-                                <option value="wednesday">Wednesday</option>
-                                <option value="thursday">Thursday</option>
-                                <option value="friday">Friday</option>
-                                <option value="saturday">Saturday</option>
-                                <option value="sunday">Sunday</option>
-                            </select>
-                        </div>
-                        <div class="col-auto">
-                            <label class="form-label small fw-semibold mb-1">Time (server local)</label>
-                            <input type="time" id="sched-time" class="form-control form-control-sm" style="width:120px;">
-                        </div>
-                        <div class="col-auto">
-                            <button class="btn btn-sm btn-primary px-3" onclick="addSchedule()">
-                                <i class="bi bi-plus-lg me-1"></i>Add Schedule
-                            </button>
-                        </div>
-                    </div>
-                    <div id="sched-msg" class="mt-2" style="font-size:0.78rem;"></div>
-                </div>
-            </div>
-
-            <!-- Recipients Panel -->
-            <div id="recipients-panel" class="mt-3 p-3 border rounded bg-light" style="display:none;">
-                <div class="section-title mb-2"><i class="bi bi-envelope me-1"></i>Email Recipients</div>
-                <div id="recipients-list" class="mb-3"></div>
-                <div class="input-group input-group-sm">
-                    <input type="text" id="new-recipient-input" class="form-control"
-                           placeholder="Add recipient email..."
-                           onkeydown="if(event.key==='Enter') addRecipient()">
-                    <button class="btn btn-outline-secondary" type="button" onclick="addRecipient()">
-                        <i class="bi bi-plus-lg me-1"></i>Add
-                    </button>
-                </div>
-                <div id="recipients-msg" class="mt-1" style="font-size:0.78rem;"></div>
             </div>
         </div>
     </div>
 
-    <!-- Tabbed Panel -->
-    <div class="card" id="main-tabs-card" style="display:none;">
-        <div class="card-header p-0 border-bottom d-flex align-items-end justify-content-between pe-3">
-            <ul class="nav nav-tabs mb-0 px-3 pt-2 border-bottom-0" id="mainTabs">
-                <li class="nav-item">
-                    <button class="nav-link active" id="tab-progress-btn"
-                            data-bs-toggle="tab" data-bs-target="#tab-progress" type="button">
-                        <i class="bi bi-terminal me-1"></i> Live Progress
-                    </button>
-                </li>
-                <li class="nav-item">
-                    <button class="nav-link" id="tab-dashboard-btn"
-                            data-bs-toggle="tab" data-bs-target="#tab-dashboard" type="button">
-                        <i class="bi bi-bar-chart-line me-1"></i> Dashboard
-                    </button>
-                </li>
-                <li class="nav-item d-flex align-items-center ms-2 mb-1 gap-2">
-                    <a id="btn-export-csv" href="/api/download"
-                       class="btn btn-sm btn-success px-3 disabled"
-                       title="Download CSV report"
-                       aria-disabled="true">
-                        <i class="bi bi-download me-1"></i> Export CSV
-                    </a>
-                    <button id="btn-email-report" class="btn btn-sm btn-outline-primary px-3 disabled"
-                            title="Resend report to all recipients" aria-disabled="true"
-                            onclick="resendReport()">
-                        <i class="bi bi-envelope me-1"></i> Resend Report
-                    </button>
-                </li>
-            </ul>
-            <button id="btn-collapse-panel" class="btn btn-sm btn-link text-muted p-1 mb-1"
-                    title="Collapse / Expand" onclick="togglePanel()">
-                <i class="bi bi-chevron-up" id="collapse-icon"></i>
-            </button>
-        </div>
+    <!-- Hidden log container (keeps addLog() working; sticky bar is the visible log) -->
+    <div id="log-container" style="display:none;"></div>
 
-        <div class="tab-content">
-            <!-- Live Progress Tab -->
-            <div class="tab-pane fade show active p-3" id="tab-progress">
-                <div class="d-flex justify-content-between align-items-center mb-2">
-                    <small class="text-muted fw-semibold">Execution log</small>
-                    <button class="btn btn-sm btn-link text-muted p-0" onclick="clearLog()">Clear log</button>
-                </div>
-                <div id="log-container"></div>
-            </div>
+</div><!-- /page-run -->
 
-            <!-- Dashboard Tab -->
-            <div class="tab-pane fade p-3" id="tab-dashboard">
+<!-- ══════════════════════════ PAGE: SCHEDULES ══════════════════════════ -->
+<div id="page-schedules" class="page-section" style="display:none;">
+    <div class="page-title"><i class="bi bi-clock me-2"></i>Schedules</div>
+    <div class="page-subtitle">Configure automatic validation runs — triggers Validate All for the Demo instance</div>
 
-                <!-- Run Selector (shown when 2 runs available) -->
-                <div id="run-selector" class="d-flex align-items-center gap-2 mb-3 pb-3 border-bottom" style="display:none;">
-                    <i class="bi bi-clock-history text-muted"></i>
-                    <span class="text-muted small fw-semibold me-1">Run history:</span>
-                    <div id="run-buttons" class="btn-group btn-group-sm" role="group"></div>
-                </div>
-
-                <!-- Stats Row -->
-                <div class="row g-3 mb-4">
-                    <div class="col-6 col-sm-3">
-                        <div class="card stat-card">
-                            <div class="stat-number text-dark" id="stat-total">0</div>
-                            <div class="stat-label">Total Checks</div>
-                        </div>
-                    </div>
-                    <div class="col-6 col-sm-3">
-                        <div class="card stat-card">
-                            <div class="stat-number text-success" id="stat-pass">0</div>
-                            <div class="stat-label">PASS</div>
-                        </div>
-                    </div>
-                    <div class="col-6 col-sm-3">
-                        <div class="card stat-card">
-                            <div class="stat-number text-danger" id="stat-fail">0</div>
-                            <div class="stat-label">FAIL</div>
-                        </div>
-                    </div>
-                    <div class="col-6 col-sm-3">
-                        <div class="card stat-card">
-                            <div class="pass-rate" id="stat-rate">—</div>
-                            <div class="stat-label">Pass Rate</div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Filter Row -->
-                <div class="d-flex flex-wrap gap-2 align-items-center mb-3">
-                    <div class="d-flex align-items-center gap-1">
-                        <span class="text-muted small">Show</span>
-                        <select id="page-size-select" class="form-select form-select-sm" style="width:72px;">
-                            <option value="10" selected>10</option>
-                            <option value="25">25</option>
-                            <option value="50">50</option>
-                            <option value="0">All</option>
+    <div class="card" style="max-width:680px;">
+        <div class="card-body">
+            <!-- Existing schedules -->
+            <div id="schedules-list" class="mb-3"></div>
+            <!-- Add schedule form -->
+            <div class="border-top pt-3">
+                <div class="section-title mb-3"><i class="bi bi-plus-circle me-1"></i>Add New Schedule</div>
+                <div class="row g-2 align-items-end">
+                    <div class="col-auto">
+                        <label class="form-label small fw-semibold mb-1">Type</label>
+                        <select id="sched-type" class="form-select form-select-sm" onchange="onSchedTypeChange()" style="width:110px;">
+                            <option value="daily">Daily</option>
+                            <option value="weekly">Weekly</option>
                         </select>
-                        <span class="text-muted small">entries</span>
                     </div>
-                    <div class="vr mx-1"></div>
-                    <select id="filter-tenant" class="form-select form-select-sm" style="max-width:200px;">
-                        <option value="">All tenants</option>
-                    </select>
-                    <select id="filter-status" class="form-select form-select-sm" style="max-width:160px;">
-                        <option value="">All statuses</option>
-                        <option value="PASS">PASS</option>
-                        <option value="FAIL">FAIL</option>
-                        <option value="NOT RUN">NOT RUN</option>
-                    </select>
-                    <button class="btn btn-sm btn-outline-secondary" onclick="clearFilters()">Reset</button>
-                </div>
-
-                <!-- Results Table -->
-                <div class="card">
-                    <div class="card-body p-0">
-                        <div class="table-responsive">
-                            <table class="table table-hover mb-0 align-middle" id="results-table">
-                                <thead class="table-dark">
-                                    <tr>
-                                        <th>Tenant</th>
-                                        <th>Application</th>
-                                        <th class="text-end">API Count</th>
-                                        <th class="text-end">SQL Count</th>
-                                        <th class="text-end">Difference</th>
-                                        <th class="text-center">Status</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="results-body"></tbody>
-                            </table>
-                        </div>
-                        <!-- Pagination bar -->
-                        <div class="d-flex align-items-center justify-content-between px-3 py-2 border-top" id="pagination-wrap" style="display:none !important;">
-                            <small class="text-muted" id="visible-count"></small>
-                            <nav aria-label="Table pagination">
-                                <ul class="pagination pagination-sm mb-0" id="pagination-nav"></ul>
-                            </nav>
-                        </div>
+                    <div class="col-auto" id="sched-day-wrap" style="display:none;">
+                        <label class="form-label small fw-semibold mb-1">Day</label>
+                        <select id="sched-day" class="form-select form-select-sm" style="width:120px;">
+                            <option value="monday">Monday</option>
+                            <option value="tuesday">Tuesday</option>
+                            <option value="wednesday">Wednesday</option>
+                            <option value="thursday">Thursday</option>
+                            <option value="friday">Friday</option>
+                            <option value="saturday">Saturday</option>
+                            <option value="sunday">Sunday</option>
+                        </select>
+                    </div>
+                    <div class="col-auto">
+                        <label class="form-label small fw-semibold mb-1">Time (server local)</label>
+                        <input type="time" id="sched-time" class="form-control form-control-sm" style="width:120px;">
+                    </div>
+                    <div class="col-auto">
+                        <button class="btn btn-sm btn-primary px-3" onclick="addSchedule()">
+                            <i class="bi bi-plus-lg me-1"></i>Add Schedule
+                        </button>
                     </div>
                 </div>
-
-            </div><!-- /tab-dashboard -->
-        </div><!-- /tab-content -->
-    </div><!-- /main-tabs-card -->
-
+                <div id="sched-msg" class="mt-2" style="font-size:0.78rem;"></div>
+            </div>
+        </div>
+    </div>
 </div>
 
-<!-- Success Toast -->
+<!-- ════════════════════════════ PAGE: REPORTS ════════════════════════════ -->
+<div id="page-reports" class="page-section" style="display:none;">
+
+    <!-- Header row -->
+    <div class="d-flex align-items-start justify-content-between flex-wrap gap-2 mb-1">
+        <div>
+            <div class="page-title"><i class="bi bi-bar-chart-line me-2"></i>Reports</div>
+            <div class="page-subtitle">Validation results and run history</div>
+        </div>
+        <div class="d-flex gap-2 mt-1">
+            <button id="btn-export-csv" onclick="exportFilteredCsv()"
+                    class="btn btn-success btn-sm px-3 disabled" aria-disabled="true">
+                <i class="bi bi-download me-1"></i>Export CSV
+            </button>
+            <button id="btn-email-report" class="btn btn-outline-primary btn-sm px-3 disabled"
+                    aria-disabled="true" onclick="resendReport()">
+                <i class="bi bi-envelope me-1"></i>Resend Report
+            </button>
+        </div>
+    </div>
+
+    <!-- Loading state -->
+    <div id="reports-loading" class="card" style="display:none;">
+        <div class="card-body text-center text-muted py-5">
+            <div class="spinner-border text-success mb-3" role="status" style="width:2.5rem;height:2.5rem;">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+            <div class="fw-semibold">Loading reports, please wait…</div>
+        </div>
+    </div>
+
+    <!-- Empty state -->
+    <div id="reports-empty" class="card" style="display:none;">
+        <div class="card-body text-center text-muted py-5">
+            <i class="bi bi-inbox" style="font-size:2.5rem; opacity:0.3;"></i>
+            <div class="mt-2 mb-3">No runs yet.</div>
+            <button class="btn btn-primary btn-sm px-4" onclick="showPage('run')">
+                <i class="bi bi-play-circle me-1"></i>Go to Run
+            </button>
+        </div>
+    </div>
+
+    <!-- Data section (shown after a run or when history exists) -->
+    <div id="reports-data" style="display:none;">
+
+        <!-- Run info strip -->
+        <div id="run-info-bar" class="card mb-3" style="display:none;">
+            <div class="card-body py-2 px-4">
+                <div class="d-flex flex-wrap gap-4 align-items-center">
+                    <span style="font-size:0.85rem;">
+                        <i class="bi bi-clock text-muted me-1"></i>
+                        <span class="text-muted">Executed:</span>
+                        <strong id="info-timestamp" class="ms-1">—</strong>
+                    </span>
+                    <span style="font-size:0.85rem;">
+                        <i class="bi bi-diagram-3 text-muted me-1"></i>
+                        <span class="text-muted">Instance:</span>
+                        <strong id="info-instance" class="ms-1">—</strong>
+                    </span>
+                    <span style="font-size:0.85rem;">
+                        <i class="bi bi-play-circle text-muted me-1"></i>
+                        <span class="text-muted">Scope:</span>
+                        <strong id="info-mode" class="ms-1">—</strong>
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Run history selector (shown when 2 runs available) -->
+        <div id="run-selector" class="d-flex align-items-center gap-2 mb-4 p-3 rounded border bg-white" style="display:none;">
+            <i class="bi bi-clock-history text-muted"></i>
+            <span class="text-muted small fw-semibold me-1">Run history:</span>
+            <div id="run-buttons" class="btn-group btn-group-sm" role="group"></div>
+        </div>
+
+        <!-- Stats row -->
+        <div class="row g-3 mb-4">
+            <div class="col-6 col-sm-3">
+                <div class="card stat-card">
+                    <div class="stat-number text-dark" id="stat-total">0</div>
+                    <div class="stat-label">Total Checks</div>
+                </div>
+            </div>
+            <div class="col-6 col-sm-3">
+                <div class="card stat-card">
+                    <div class="stat-number text-success" id="stat-pass">0</div>
+                    <div class="stat-label">PASS</div>
+                </div>
+            </div>
+            <div class="col-6 col-sm-3">
+                <div class="card stat-card">
+                    <div class="stat-number text-danger" id="stat-fail">0</div>
+                    <div class="stat-label">FAIL</div>
+                </div>
+            </div>
+            <div class="col-6 col-sm-3">
+                <div class="card stat-card">
+                    <div class="pass-rate" id="stat-rate">—</div>
+                    <div class="stat-label">Pass Rate</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Filter row -->
+        <div class="d-flex flex-wrap gap-2 align-items-center mb-3">
+            <div class="d-flex align-items-center gap-1">
+                <span class="text-muted small">Show</span>
+                <select id="page-size-select" class="form-select form-select-sm" style="width:72px;">
+                    <option value="10" selected>10</option>
+                    <option value="25">25</option>
+                    <option value="50">50</option>
+                    <option value="0">All</option>
+                </select>
+                <span class="text-muted small">entries</span>
+            </div>
+            <div class="vr mx-1"></div>
+            <select id="filter-tenant" class="form-select form-select-sm" style="max-width:200px;">
+                <option value="">All tenants</option>
+            </select>
+            <select id="filter-status" class="form-select form-select-sm" style="max-width:160px;">
+                <option value="">All statuses</option>
+                <option value="PASS">PASS</option>
+                <option value="FAIL">FAIL</option>
+                <option value="NOT RUN">NOT RUN</option>
+            </select>
+            <button class="btn btn-sm btn-outline-secondary" onclick="clearFilters()">Reset</button>
+        </div>
+
+        <!-- Results table -->
+        <div class="card">
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0 align-middle" id="results-table">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>Tenant</th>
+                                <th>Application</th>
+                                <th class="text-end">API Count</th>
+                                <th class="text-end">SQL Count</th>
+                                <th class="text-end">Difference</th>
+                                <th class="text-center">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="results-body"></tbody>
+                    </table>
+                </div>
+                <div class="d-flex align-items-center justify-content-between px-3 py-2 border-top"
+                     id="pagination-wrap" style="display:none !important;">
+                    <small class="text-muted" id="visible-count"></small>
+                    <nav><ul class="pagination pagination-sm mb-0" id="pagination-nav"></ul></nav>
+                </div>
+            </div>
+        </div>
+    </div><!-- /reports-data -->
+
+</div><!-- /page-reports -->
+
+<!-- ════════════════════════════ PAGE: SETTINGS ════════════════════════════ -->
+<div id="page-settings" class="page-section" style="display:none;">
+    <div class="page-title"><i class="bi bi-gear me-2"></i>Settings</div>
+    <div class="page-subtitle">Manage email recipients and notification preferences</div>
+
+    <div class="card" style="max-width:580px;">
+        <div class="card-body">
+            <div class="section-title mb-3"><i class="bi bi-envelope me-1"></i>Email Recipients</div>
+            <div id="recipients-list" class="mb-3"></div>
+            <div class="input-group input-group-sm">
+                <input type="text" id="new-recipient-input" class="form-control"
+                       placeholder="Add recipient email..."
+                       onkeydown="if(event.key==='Enter') addRecipient()">
+                <button class="btn btn-outline-secondary" type="button" onclick="addRecipient()">
+                    <i class="bi bi-plus-lg me-1"></i>Add
+                </button>
+            </div>
+            <div id="recipients-msg" class="mt-1" style="font-size:0.78rem;"></div>
+            <div class="mt-4 pt-3 border-top">
+                <button class="btn btn-sm btn-outline-secondary" onclick="sendTestEmail()">
+                    <i class="bi bi-envelope-check me-1"></i>Send Test Email
+                </button>
+                <span id="test-email-msg" class="ms-2" style="font-size:0.82rem;"></span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ══════════════════════ STICKY PROGRESS BAR ══════════════════════ -->
+<div id="sticky-progress">
+    <div class="sp-header">
+        <div class="d-flex align-items-center gap-2">
+            <i class="bi bi-arrow-repeat spinning" style="color:#27ae60; font-size:0.9rem;"></i>
+            <span class="sp-status" id="sticky-status">Validating...</span>
+        </div>
+        <button class="btn btn-sm btn-link p-0" style="color:rgba(255,255,255,0.45);"
+                onclick="toggleStickyMin()" title="Minimise">
+            <i class="bi bi-chevron-down" id="sticky-toggle-icon"></i>
+        </button>
+    </div>
+    <div id="sticky-log-wrap" class="sp-mini-log">
+        <div id="sticky-log-lines"></div>
+    </div>
+</div>
+
+<!-- ═══════════════════════════ SUCCESS TOAST ═══════════════════════════ -->
 <div class="toast-container position-fixed top-0 end-0 p-3" style="z-index:9999;">
     <div id="success-toast" class="toast align-items-center text-white border-0" role="alert">
         <div class="d-flex">
             <div class="toast-body fw-semibold">
                 <i class="bi bi-check-circle-fill me-2"></i>
-                <span id="toast-message">Validation completed successfully!</span>
+                <span id="toast-message">Done!</span>
             </div>
             <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
         </div>
     </div>
 </div>
 
-
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 <script>
 'use strict';
 
-let tenantsData = {};
-let allResults = [];
-let validating = false;
-let progressTotal = 0;
-let progressDone = 0;
-let runsHistory = [];
-let activeRunIdx = 0;
-let pageSize = 10;
-let currentPage = 1;
+// ── State ──────────────────────────────────────────────────────────────────
+let tenantsData     = {};
+let allResults      = [];
+let validating      = false;
+let progressTotal   = 0;
+let progressDone    = 0;
+let runsHistory     = [];
+let activeRunIdx    = 0;
+let pageSize        = 10;
+let currentPage     = 1;
+let selectedInstance = 'demo';
+let tenantStatusMap = {};   // { tenantName: 'PASS'|'FAIL'|'MIXED' }
+let stickyMinimised = false;
+let lastRunMeta = { timestamp: '', instance: '', mode: '' };
 
-// --- On load: ensure spinner and stop button are hidden ---
-hide('spinner-wrap');
+// Init
 hide('stop-area');
-hide('main-tabs-card');
 
-// --- Bootstrap ---
-fetch('/api/tenants')
-    .then(r => r.json())
-    .then(data => {
-        tenantsData = data;
-        const sel = document.getElementById('tenant-select');
-        Object.keys(data).sort().forEach(name => {
-            const opt = document.createElement('option');
-            opt.value = name;
-            opt.textContent = name.charAt(0).toUpperCase() + name.slice(1);
-            sel.appendChild(opt);
-        });
-    })
-    .catch(() => addLog('[ERROR] Failed to load tenant list.', 'fail'));
-
-// --- Instance selector ---
-function getSelectedInstance() {
-    return document.querySelector('input[name="instance"]:checked')?.value || 'demo';
+// Load tenants for the given instance
+function loadTenants(inst) {
+    fetch('/api/tenants?instance=' + (inst || selectedInstance))
+        .then(r => r.json())
+        .then(data => { tenantsData = data; populateTenantSelect(); })
+        .catch(() => addLog('[ERROR] Failed to load tenant list.', 'fail'));
 }
-document.querySelectorAll('input[name="instance"]').forEach(radio => {
-    radio.addEventListener('change', () => {
-        const inst = getSelectedInstance();
-        const badge = document.getElementById('instance-badge');
-        badge.textContent = inst === 'prod' ? 'Prod Environment' : 'Demo Environment';
-        badge.className = 'badge ' + (inst === 'prod' ? 'bg-danger' : 'bg-success');
-    });
-});
 
-// --- Button handlers ---
+// Load tenants on boot
+loadTenants(selectedInstance);
+
+// ── Page navigation ────────────────────────────────────────────────────────
+function showPage(name) {
+    ['run', 'schedules', 'reports', 'settings'].forEach(p => {
+        document.getElementById('page-' + p).style.display = p === name ? '' : 'none';
+    });
+    document.querySelectorAll('.page-nav-link').forEach(a => {
+        a.classList.toggle('active', a.dataset.page === name);
+    });
+    if (name === 'schedules') { loadSchedules(); setSchedTimeNow(); }
+    if (name === 'reports')   loadReportsPage();
+    if (name === 'settings')  loadRecipients();
+}
+
+// ── Instance selection ─────────────────────────────────────────────────────
+function selectInstance(inst) {
+    selectedInstance = inst;
+    document.querySelectorAll('.inst-nav-tabs .nav-link').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.inst === inst);
+    });
+    hide('tenant-select-area');
+    hide('run-one-area');
+    hide('apps-display');
+    loadTenants(inst);
+    // Clear in-memory results so previous instance's data doesn't bleed through
+    allResults = [];
+    runsHistory = [];
+    lastRunMeta = { timestamp: '', instance: '', mode: '' };
+    // Refresh Reports page if it's currently visible
+    if (document.getElementById('page-reports').style.display !== 'none') {
+        loadReportsPage();
+    }
+}
+
+function getSelectedInstance() { return selectedInstance; }
+
+// ── Tenant dropdown ────────────────────────────────────────────────────────
+function populateTenantSelect() {
+    const sel = document.getElementById('tenant-select');
+    const current = sel.value;
+    sel.innerHTML = '<option value="">— Select tenant —</option>';
+    Object.keys(tenantsData).sort().forEach(name => {
+        const opt = document.createElement('option');
+        opt.value = name;
+        opt.textContent = name.charAt(0).toUpperCase() + name.slice(1);
+        if (name === current) opt.selected = true;
+        sel.appendChild(opt);
+    });
+}
+
+function updateTenantStatusMap() {
+    tenantStatusMap = {};
+    [...new Set(allResults.map(r => r.tenant))].forEach(t => {
+        const rows = allResults.filter(r => r.tenant === t);
+        const hasFail = rows.some(r => r.status === 'FAIL');
+        const allPass = rows.every(r => r.status === 'PASS');
+        tenantStatusMap[t] = hasFail ? 'FAIL' : allPass ? 'PASS' : 'MIXED';
+    });
+}
+
+// ── Button handlers ────────────────────────────────────────────────────────
 document.getElementById('btn-validate-all').addEventListener('click', () => {
     if (validating) return;
     hide('tenant-select-area');
@@ -459,8 +639,7 @@ document.getElementById('btn-validate-all').addEventListener('click', () => {
 
 document.getElementById('btn-validate-one').addEventListener('click', () => {
     const area = document.getElementById('tenant-select-area');
-    const visible = area.style.display !== 'none';
-    visible ? hide('tenant-select-area') : show('tenant-select-area');
+    area.style.display !== 'none' ? hide('tenant-select-area') : show('tenant-select-area');
     hide('run-one-area');
     hide('apps-display');
 });
@@ -470,8 +649,16 @@ document.getElementById('tenant-select').addEventListener('change', function () 
     if (!tenant) { hide('run-one-area'); hide('apps-display'); return; }
     show('run-one-area');
     const apps = tenantsData[tenant] || [];
-    document.getElementById('apps-badges').innerHTML = apps
-        .map(a => `<span class="badge bg-secondary">${a}</span>`).join('');
+    document.getElementById('apps-badges').innerHTML =
+        apps.map(a => `<span class="badge bg-secondary">${a}</span>`).join('');
+    const status = tenantStatusMap[tenant];
+    const statusEl = document.getElementById('tenant-last-status-badge');
+    if (status) {
+        const cls = status === 'PASS' ? 'bg-success' : status === 'FAIL' ? 'bg-danger' : 'bg-warning text-dark';
+        statusEl.innerHTML = `<span class="badge ${cls}" style="font-size:0.7rem;">Last: ${status}</span>`;
+    } else {
+        statusEl.innerHTML = '<span class="badge bg-secondary" style="font-size:0.7rem;">No previous run</span>';
+    }
     show('apps-display');
 });
 
@@ -487,50 +674,27 @@ document.getElementById('btn-stop').addEventListener('click', () => {
         .then(() => addLog('⏹ Stop requested — finishing current tenant...', 'fail'));
 });
 
-document.getElementById('btn-last-run').addEventListener('click', () => {
-    if (validating) return;
-    fetch('/api/last-results')
-        .then(r => r.json())
-        .then(data => {
-            if (!data.runs || !data.runs.length) {
-                alert('No previous run found. Run a validation first.');
-                return;
-            }
-            runsHistory = data.runs;
-            // Build run selector buttons
-            const runBtns = document.getElementById('run-buttons');
-            runBtns.innerHTML = '';
-            runsHistory.forEach((run, i) => {
-                const btn = document.createElement('button');
-                btn.type = 'button';
-                btn.className = 'btn btn-sm run-selector-btn ' + (i === 0 ? 'btn-primary' : 'btn-outline-primary');
-                btn.innerHTML = `<i class="bi bi-clock me-1"></i>Run ${i + 1} &mdash; ${run.timestamp} (${run.count} rows)`;
-                btn.onclick = () => showRun(i);
-                runBtns.appendChild(btn);
-            });
-            // Show selector only if 2 runs exist
-            if (runsHistory.length > 1) {
-                document.getElementById('run-selector').style.display = 'flex';
-            } else {
-                document.getElementById('run-selector').style.display = 'none';
-            }
-            clearLog();
-            addLog(`Loaded ${runsHistory.length} run(s) from history.`, 'info');
-            show('main-tabs-card');
-            showRun(0);
-            bootstrap.Tab.getOrCreateInstance(document.getElementById('tab-dashboard-btn')).show();
-            setCsvReady(runsHistory[0].csv_available);
-        })
-        .catch(() => alert('Could not load last run results.'));
-});
+// btn-last-run navigates to reports via inline onclick — no JS handler needed
 
-// --- Core validation flow ---
-function updateSpinner() {
-    document.getElementById('spinner-label').textContent =
-        progressTotal > 1
-            ? `Validating... ${progressDone} / ${progressTotal} tenants`
-            : `Validating ${document.getElementById('tenant-select').value || ''}...`;
+function buildRunSelector() {
+    const runBtns = document.getElementById('run-buttons');
+    runBtns.innerHTML = '';
+    runsHistory.forEach((run, i) => {
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'btn btn-sm run-selector-btn ' + (i === 0 ? 'btn-primary' : 'btn-outline-primary');
+        const inst = (run.instance || 'demo').charAt(0).toUpperCase() + (run.instance || 'demo').slice(1);
+        btn.innerHTML = `<i class="bi bi-clock me-1"></i>Run ${i + 1} &mdash; ${inst} / ${run.mode || 'Validate All'} &mdash; ${run.timestamp}`;
+        btn.onclick = () => {
+            showRun(i);
+            showRunInfoBar(run.timestamp, inst, formatScope(run.mode));
+        };
+        runBtns.appendChild(btn);
+    });
+    document.getElementById('run-selector').style.display = runsHistory.length > 1 ? 'flex' : 'none';
 }
+
+// ── Validation core ────────────────────────────────────────────────────────
 
 function startValidation(payload) {
     if (validating) return;
@@ -541,13 +705,15 @@ function startValidation(payload) {
     document.getElementById('results-body').innerHTML = '';
     setCsvReady(false);
     clearLog();
-    show('main-tabs-card');
-    // Switch to Live Progress tab
-    bootstrap.Tab.getOrCreateInstance(document.getElementById('tab-progress-btn')).show();
-    show('spinner-wrap');
     show('stop-area');
-    updateSpinner();
+    showStickyProgress();
     setButtonsDisabled(true);
+
+    lastRunMeta = {
+        timestamp: new Date().toLocaleString(),
+        instance: payload.instance.charAt(0).toUpperCase() + payload.instance.slice(1),
+        mode: payload.mode === 'one' ? payload.tenant : 'Validate All'
+    };
 
     fetch('/api/validate', {
         method: 'POST',
@@ -580,84 +746,124 @@ function handleEvent(msg) {
     switch (msg.type) {
         case 'log':
             addLog(msg.message);
+            addStickyLog(msg.message);
             break;
         case 'tenant_start':
             addLog(`▶ ${msg.tenant} — ${msg.total_apps} apps`, 'info');
+            setStickyStatus(`${msg.tenant} — ${msg.total_apps} apps`);
             break;
         case 'app_start': {
             const tenantPart = progressTotal > 1 ? ` | Tenant ${progressDone + 1}/${progressTotal}` : '';
-            document.getElementById('spinner-label').textContent =
-                `${msg.tenant} | App ${msg.app_num}/${msg.total_apps}: ${msg.app}${tenantPart}`;
+            setStickyStatus(`${msg.tenant} | App ${msg.app_num}/${msg.total_apps}: ${msg.app}${tenantPart}`);
             break;
         }
         case 'app_done':
             break;
         case 'tenant_done':
             progressDone++;
-            updateSpinner();
             if (msg.status === 'FAILED') {
                 addLog(`✗ ${msg.tenant} — TENANT FAILED: ${msg.error}`, 'fail');
+                addStickyLog(`✗ ${msg.tenant} FAILED`);
             } else {
                 const pass = (msg.rows || []).filter(r => r.status === 'PASS').length;
                 const fail = (msg.rows || []).length - pass;
-                addLog(`✓ ${msg.tenant} — ${(msg.rows||[]).length} apps | ${pass} PASS ${fail > 0 ? '| '+fail+' FAIL' : ''}`,
+                addLog(`✓ ${msg.tenant} — ${(msg.rows || []).length} apps | ${pass} PASS${fail > 0 ? ' | ' + fail + ' FAIL' : ''}`,
                        fail > 0 ? 'fail' : 'pass');
+                addStickyLog(`✓ ${msg.tenant} — ${pass} PASS${fail > 0 ? ' | ' + fail + ' FAIL' : ''}`);
                 (msg.rows || []).forEach(row => {
-                    allResults.push({ tenant: msg.tenant, ...row });
                     appendRow({ tenant: msg.tenant, ...row });
                 });
                 updateStats();
             }
             break;
         case 'done': {
-            addLog(`\nDone. Total: ${msg.total} | PASS: ${msg.passed} | FAIL: ${msg.failed}`, 'pass');
+            const timing = msg.duration
+                ? ` | Started: ${msg.started_at} | Finished: ${msg.finished_at} | Duration: ${msg.duration}`
+                : '';
+            addLog(`\nDone. Total: ${msg.total} | PASS: ${msg.passed} | FAIL: ${msg.failed}${timing}`, 'pass');
             setCsvReady(true);
             validationDone();
-            bootstrap.Tab.getOrCreateInstance(document.getElementById('tab-dashboard-btn')).show();
-            const inst = getSelectedInstance().charAt(0).toUpperCase() + getSelectedInstance().slice(1);
-            const mode = progressTotal > 1 ? 'Validate All' : 'Validate One';
-            showToast(`${mode} completed successfully on ${inst} instance — ${msg.passed} PASS / ${msg.failed} FAIL`);
+            showPage('reports');
+            hideStickyProgress();
             break;
         }
         case 'end':
             validationDone();
+            hideStickyProgress();
             break;
         case 'error':
             addLog('ERROR: ' + msg.message, 'fail');
             validationDone();
+            hideStickyProgress();
             break;
     }
 }
 
 function validationDone() {
     validating = false;
-    hide('spinner-wrap');
     hide('stop-area');
     setButtonsDisabled(false);
-    updateStats();
-    applyFilters();
+    updateTenantStatusMap();
 }
 
 function showRun(idx) {
     activeRunIdx = idx;
-    const run = runsHistory[idx];
-    allResults = run.rows;
-    document.getElementById('results-body').innerHTML = '';
-    run.rows.forEach(row => appendRow(row));
-    updateStats();
-    applyFilters();
-    setCsvReady(run.csv_available);
-    // Highlight active run button
     document.querySelectorAll('.run-selector-btn').forEach((btn, i) => {
         btn.classList.toggle('btn-primary', i === idx);
         btn.classList.toggle('btn-outline-primary', i !== idx);
     });
+    const cached = runsHistory[idx] && runsHistory[idx].rows;
+    if (cached) {
+        renderRunRows(cached, runsHistory[idx].csv_available);
+    } else {
+        fetch(`/api/run-rows/${idx}?instance=${selectedInstance}`)
+            .then(r => r.json())
+            .then(data => renderRunRows(data.rows || [], data.csv_available));
+    }
 }
 
-// --- Log ---
+function renderRunRows(rows, csvAvailable) {
+    allResults = rows;
+    currentPage = 1;
+    updateTenantStatusMap();
+    updateStats();
+    applyFilters();
+    setCsvReady(csvAvailable);
+}
+
+// ── Sticky progress ────────────────────────────────────────────────────────
+function showStickyProgress() {
+    document.getElementById('sticky-progress').style.display = 'block';
+    document.body.style.paddingBottom = '110px';
+    document.getElementById('sticky-log-lines').innerHTML = '';
+}
+function hideStickyProgress() {
+    setTimeout(() => {
+        document.getElementById('sticky-progress').style.display = 'none';
+        document.body.style.paddingBottom = '';
+    }, 4000);
+}
+function setStickyStatus(text) {
+    document.getElementById('sticky-status').textContent = text;
+}
+function addStickyLog(text) {
+    const el = document.getElementById('sticky-log-lines');
+    const line = document.createElement('div');
+    line.textContent = text;
+    el.appendChild(line);
+    while (el.children.length > 4) el.removeChild(el.firstChild);
+}
+function toggleStickyMin() {
+    stickyMinimised = !stickyMinimised;
+    document.getElementById('sticky-log-wrap').style.display = stickyMinimised ? 'none' : '';
+    document.getElementById('sticky-toggle-icon').className =
+        stickyMinimised ? 'bi bi-chevron-up' : 'bi bi-chevron-down';
+}
+
+// ── Log ────────────────────────────────────────────────────────────────────
 function addLog(message, style) {
     const el = document.getElementById('log-container');
-    const p = document.createElement('p');
+    const p  = document.createElement('p');
     p.className = 'log-entry' + (style ? ` log-${style}` : '');
     p.textContent = message;
     el.appendChild(p);
@@ -665,14 +871,12 @@ function addLog(message, style) {
 }
 function clearLog() { document.getElementById('log-container').innerHTML = ''; }
 
-// --- Results table ---
-function appendRow(row) {
+// ── Results table ──────────────────────────────────────────────────────────
+function buildRowElement(row) {
     const isPass   = row.status === 'PASS';
     const isNotRun = row.status === 'NOT RUN';
     const tr = document.createElement('tr');
     tr.className = isPass ? 'table-pass' : isNotRun ? 'table-notrun' : 'table-fail';
-    tr.dataset.tenant = (row.tenant || '').toLowerCase();
-    tr.dataset.status = row.status;
     const apiCount = row.list_count >= 0 ? row.list_count : '—';
     const sqlCount = row.sql_count >= 0 ? row.sql_count : '—';
     const diff     = row.difference !== 0 ? row.difference : '—';
@@ -683,13 +887,23 @@ function appendRow(row) {
         <td class="text-end">${apiCount}</td>
         <td class="text-end">${sqlCount}</td>
         <td class="text-end fw-semibold" style="${row.difference < 0 ? 'color:#c0392b' : row.difference > 0 ? 'color:#e67e22' : ''}">${diff}</td>
-        <td class="text-center">
-            <span class="badge ${badgeCls}">${esc(row.status)}</span>
-        </td>`;
-    document.getElementById('results-body').appendChild(tr);
+        <td class="text-center"><span class="badge ${badgeCls}">${esc(row.status)}</span></td>`;
+    return tr;
 }
 
-// --- Stats ---
+// Used during live validation streaming — batch re-render every 20 rows to avoid thrashing
+let _appendTimer = null;
+function appendRow(row) {
+    allResults.push(row);
+    if (_appendTimer) return;
+    _appendTimer = setTimeout(() => {
+        _appendTimer = null;
+        updateStats();
+        applyFilters();
+    }, 150);
+}
+
+// ── Stats ──────────────────────────────────────────────────────────────────
 function updateStats() {
     populateTenantDropdown();
     const total   = allResults.length;
@@ -704,9 +918,9 @@ function updateStats() {
     document.getElementById('stat-rate').textContent  = rate !== null ? rate + '%' : '—';
 }
 
-// --- Filters ---
+// ── Filters ────────────────────────────────────────────────────────────────
 function populateTenantDropdown() {
-    const sel = document.getElementById('filter-tenant');
+    const sel     = document.getElementById('filter-tenant');
     const current = sel.value;
     const tenants = [...new Set(allResults.map(r => r.tenant))].sort();
     sel.innerHTML = '<option value="">All tenants</option>';
@@ -720,25 +934,28 @@ function populateTenantDropdown() {
 }
 
 function applyFilters() {
-    const tf = document.getElementById('filter-tenant').value;
+    const tf = document.getElementById('filter-tenant').value.toLowerCase();
     const sf = document.getElementById('filter-status').value;
-    const allRows = Array.from(document.querySelectorAll('#results-body tr'));
-    const matching = allRows.filter(tr =>
-        (!tf || tr.dataset.tenant === tf) && (!sf || tr.dataset.status === sf)
+    const filtered = allResults.filter(r =>
+        (!tf || (r.tenant || '').toLowerCase() === tf) &&
+        (!sf || r.status === sf)
     );
-    const total = matching.length;
+    const total = filtered.length;
     const ps = pageSize === 0 ? total : pageSize;
     const totalPages = ps > 0 ? Math.ceil(total / ps) : 1;
     if (currentPage > totalPages) currentPage = 1;
     const start = (currentPage - 1) * (ps || total);
-    const end = ps > 0 ? start + ps : total;
+    const pageRows = filtered.slice(start, start + (ps || total));
 
-    allRows.forEach(tr => { tr.style.display = 'none'; });
-    matching.forEach((tr, i) => { tr.style.display = (i >= start && i < end) ? '' : 'none'; });
+    // Render only current page rows in one DOM write via DocumentFragment
+    const frag = document.createDocumentFragment();
+    pageRows.forEach(row => frag.appendChild(buildRowElement(row)));
+    const tbody = document.getElementById('results-body');
+    tbody.innerHTML = '';
+    tbody.appendChild(frag);
 
-    const vc = document.getElementById('visible-count');
-    vc.textContent = total > 0 ? `Showing ${start + 1}–${Math.min(end, total)} of ${total} entries` : '';
-
+    document.getElementById('visible-count').textContent =
+        total > 0 ? `Showing ${start + 1}–${Math.min(start + pageRows.length, total)} of ${total} entries` : '';
     const wrap = document.getElementById('pagination-wrap');
     wrap.style.display = total > 0 ? 'flex' : 'none';
     renderPagination(totalPages);
@@ -748,24 +965,17 @@ function renderPagination(totalPages) {
     const nav = document.getElementById('pagination-nav');
     nav.innerHTML = '';
     if (totalPages <= 1) return;
-
     const addBtn = (label, page, disabled, active) => {
         const li = document.createElement('li');
         li.className = `page-item${disabled ? ' disabled' : ''}${active ? ' active' : ''}`;
         const a = document.createElement('a');
-        a.className = 'page-link';
-        a.href = '#';
-        a.innerHTML = label;
-        if (!disabled && !active) {
+        a.className = 'page-link'; a.href = '#'; a.innerHTML = label;
+        if (!disabled && !active)
             a.addEventListener('click', e => { e.preventDefault(); currentPage = page; applyFilters(); });
-        }
-        li.appendChild(a);
-        nav.appendChild(li);
+        li.appendChild(a); nav.appendChild(li);
     };
-
     addBtn('&laquo;', currentPage - 1, currentPage === 1, false);
-    let s = Math.max(1, currentPage - 2);
-    let e = Math.min(totalPages, s + 4);
+    let s = Math.max(1, currentPage - 2), e = Math.min(totalPages, s + 4);
     if (e - s < 4) s = Math.max(1, e - 4);
     if (s > 1) { addBtn('1', 1, false, false); if (s > 2) addBtn('…', null, true, false); }
     for (let p = s; p <= e; p++) addBtn(p, p, false, p === currentPage);
@@ -783,59 +993,88 @@ function clearFilters() {
 document.getElementById('filter-tenant').addEventListener('change', () => { currentPage = 1; applyFilters(); });
 document.getElementById('filter-status').addEventListener('change', () => { currentPage = 1; applyFilters(); });
 document.getElementById('page-size-select').addEventListener('change', function () {
-    pageSize = parseInt(this.value);
-    currentPage = 1;
-    applyFilters();
+    pageSize = parseInt(this.value); currentPage = 1; applyFilters();
 });
 
-// --- Helpers ---
-function show(id) {
-    const el = document.getElementById(id);
-    el.style.display = id === 'spinner-wrap' ? 'flex' : 'block';
-}
-function hide(id) { document.getElementById(id).style.display = 'none'; }
-function setButtonsDisabled(v) {
-    ['btn-validate-all','btn-validate-one','btn-run-one'].forEach(id => {
-        const el = document.getElementById(id);
-        if (el) el.disabled = v;
-    });
-}
-function esc(str) {
-    return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-}
-
-function setCsvReady(ready) {
-    ['btn-export-csv', 'btn-email-report'].forEach(id => {
-        const btn = document.getElementById(id);
-        if (!btn) return;
-        if (ready) {
-            btn.classList.remove('disabled');
-            btn.removeAttribute('aria-disabled');
-        } else {
-            btn.classList.add('disabled');
-            btn.setAttribute('aria-disabled', 'true');
+// ── Reports page ───────────────────────────────────────────────────────────
+function loadReportsPage() {
+    // If live run data is already in memory, show it instantly — no fetch needed.
+    // This covers the auto-navigate after a run completes (avoids spinner + timing race).
+    if (allResults.length > 0) {
+        updateStats();
+        applyFilters();
+        buildRunSelector();
+        if (lastRunMeta.timestamp) {
+            showRunInfoBar(lastRunMeta.timestamp, lastRunMeta.instance, formatScope(lastRunMeta.mode));
+        } else if (runsHistory.length > 0) {
+            const r0 = runsHistory[0];
+            showRunInfoBar(r0.timestamp,
+                r0.instance.charAt(0).toUpperCase() + r0.instance.slice(1),
+                formatScope(r0.mode));
         }
-    });
+        hide('reports-loading'); hide('reports-empty');
+        show('reports-data');
+        // Silently refresh run selector in background if history not yet loaded
+        if (runsHistory.length === 0) {
+            fetch('/api/last-results?instance=' + selectedInstance)
+                .then(r => r.json())
+                .then(data => {
+                    if (data.runs && data.runs.length) {
+                        runsHistory = data.runs;
+                        buildRunSelector();
+                    }
+                }).catch(() => {});
+        }
+        return;
+    }
+    // No live data — fetch history from server (normal Reports page visit)
+    hide('reports-data');
+    hide('reports-empty');
+    hide('run-info-bar');
+    show('reports-loading');
+    fetch('/api/last-results?instance=' + selectedInstance)
+        .then(r => r.json())
+        .then(data => {
+            try {
+                hide('reports-loading');
+                if (!data.runs || !data.runs.length) {
+                    hide('reports-data'); hide('run-info-bar'); show('reports-empty');
+                    return;
+                }
+                runsHistory = data.runs;
+                buildRunSelector();
+                showRun(0);
+                const r0 = data.runs[0];
+                showRunInfoBar(r0.timestamp,
+                    r0.instance.charAt(0).toUpperCase() + r0.instance.slice(1),
+                    formatScope(r0.mode));
+                hide('reports-empty');
+                show('reports-data');
+            } catch(e) {
+                console.error('Reports load error:', e);
+                hide('reports-loading');
+                show('reports-empty');
+            }
+        })
+        .catch(() => {
+            hide('reports-loading');
+            hide('reports-data'); hide('run-info-bar'); show('reports-empty');
+        });
 }
 
-function showToast(message, isSuccess = true) {
-    const toast = document.getElementById('success-toast');
-    toast.className = `toast align-items-center text-white border-0 ${isSuccess ? 'bg-success' : 'bg-danger'}`;
-    document.getElementById('toast-message').textContent = message;
-    bootstrap.Toast.getOrCreateInstance(toast, { delay: 5000 }).show();
+function formatScope(mode) {
+    if (!mode || mode === 'Validate All') return 'Validate All';
+    return 'Validate One';
 }
 
-// --- Recipients management ---
-let recipientsOpen = false;
-
-function toggleRecipients() {
-    recipientsOpen = !recipientsOpen;
-    document.getElementById('recipients-panel').style.display = recipientsOpen ? 'block' : 'none';
-    document.getElementById('recipients-chevron').className =
-        recipientsOpen ? 'bi bi-chevron-up ms-1' : 'bi bi-chevron-down ms-1';
-    if (recipientsOpen) loadRecipients();
+function showRunInfoBar(timestamp, instance, mode) {
+    document.getElementById('info-timestamp').textContent = timestamp;
+    document.getElementById('info-instance').textContent  = instance;
+    document.getElementById('info-mode').textContent      = mode;
+    show('run-info-bar');
 }
 
+// ── Settings: recipients ───────────────────────────────────────────────────
 function loadRecipients() {
     fetch('/api/recipients')
         .then(r => r.json())
@@ -873,27 +1112,15 @@ function addRecipient() {
     const email = input.value.trim();
     if (!email) return;
     fetch('/api/recipients', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email })
     })
     .then(r => r.json())
     .then(data => {
-        if (data.error) {
-            msg.textContent = data.error;
-            msg.className = 'mt-1 text-danger';
-        } else {
-            input.value = '';
-            msg.textContent = `${email} added.`;
-            msg.className = 'mt-1 text-success';
-            loadRecipients();
-            setTimeout(() => { msg.textContent = ''; }, 3000);
-        }
+        if (data.error) { msg.textContent = data.error; msg.className = 'mt-1 text-danger'; }
+        else { input.value = ''; msg.textContent = `${email} added.`; msg.className = 'mt-1 text-success'; loadRecipients(); setTimeout(() => { msg.textContent = ''; }, 3000); }
     })
-    .catch(err => {
-        msg.textContent = 'Failed — restart the server and try again.';
-        msg.className = 'mt-1 text-danger';
-    });
+    .catch(() => { msg.textContent = 'Failed — restart the server and try again.'; msg.className = 'mt-1 text-danger'; });
 }
 
 function removeRecipient(email) {
@@ -901,42 +1128,36 @@ function removeRecipient(email) {
         .then(() => loadRecipients());
 }
 
+function sendTestEmail() {
+    const msg = document.getElementById('test-email-msg');
+    msg.textContent = 'Sending...'; msg.className = 'ms-2 text-muted';
+    fetch('/api/test-email', { method: 'POST' })
+        .then(r => r.json())
+        .then(data => {
+            if (data.error) { msg.textContent = 'Failed: ' + data.error; msg.className = 'ms-2 text-danger'; }
+            else { msg.textContent = 'Sent successfully!'; msg.className = 'ms-2 text-success'; }
+            setTimeout(() => { msg.textContent = ''; }, 4000);
+        })
+        .catch(() => { msg.textContent = 'Failed'; msg.className = 'ms-2 text-danger'; });
+}
 
-// --- Scheduler ---
-let schedulerOpen = false;
-
+// ── Scheduler ─────────────────────────────────────────────────────────────
 function setSchedTimeNow() {
     const now = new Date();
-    const hh = String(now.getHours()).padStart(2, '0');
-    const mm = String(now.getMinutes()).padStart(2, '0');
-    document.getElementById('sched-time').value = `${hh}:${mm}`;
+    document.getElementById('sched-time').value =
+        `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`;
 }
-
-function toggleScheduler() {
-    schedulerOpen = !schedulerOpen;
-    document.getElementById('scheduler-panel').style.display = schedulerOpen ? 'block' : 'none';
-    document.getElementById('scheduler-chevron').className =
-        schedulerOpen ? 'bi bi-chevron-up ms-1' : 'bi bi-chevron-down ms-1';
-    if (schedulerOpen) { loadSchedules(); setSchedTimeNow(); }
-}
-
 function onSchedTypeChange() {
-    const isWeekly = document.getElementById('sched-type').value === 'weekly';
-    document.getElementById('sched-day-wrap').style.display = isWeekly ? 'block' : 'none';
+    document.getElementById('sched-day-wrap').style.display =
+        document.getElementById('sched-type').value === 'weekly' ? 'block' : 'none';
 }
-
 function loadSchedules() {
-    fetch('/api/schedules')
-        .then(r => r.json())
-        .then(data => renderSchedules(data))
-        .catch(() => {});
+    fetch('/api/schedules').then(r => r.json()).then(data => renderSchedules(data)).catch(() => {});
 }
-
 function nextRunLabel(sched) {
     if (!sched.enabled) return '<span class="text-muted">Disabled</span>';
     const [h, m] = sched.time.split(':').map(Number);
-    const now = new Date();
-    const next = new Date();
+    const now = new Date(), next = new Date();
     next.setHours(h, m, 0, 0);
     if (sched.type === 'daily') {
         if (next <= now) next.setDate(next.getDate() + 1);
@@ -947,24 +1168,17 @@ function nextRunLabel(sched) {
         next.setDate(next.getDate() + diff);
     }
     return 'Next: <strong>' + next.toLocaleString([], {
-        weekday: 'short', month: 'short', day: 'numeric',
-        hour: '2-digit', minute: '2-digit'
+        weekday: 'short', month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit'
     }) + '</strong>';
 }
-
 function scheduleLabel(sched) {
-    const t = sched.time;
-    if (sched.type === 'daily') return `Daily at ${t}`;
+    if (sched.type === 'daily') return `Daily at ${sched.time}`;
     const day = sched.day.charAt(0).toUpperCase() + sched.day.slice(1);
-    return `Weekly — ${day} at ${t}`;
+    return `Weekly — ${day} at ${sched.time}`;
 }
-
 function renderSchedules(list) {
     const el = document.getElementById('schedules-list');
-    if (!list.length) {
-        el.innerHTML = '<p class="text-muted small mb-0">No schedules configured.</p>';
-        return;
-    }
+    if (!list.length) { el.innerHTML = '<p class="text-muted small mb-0">No schedules configured.</p>'; return; }
     el.innerHTML = list.map(s => `
         <div class="d-flex align-items-center gap-2 mb-2 p-2 rounded border bg-white">
             <i class="bi bi-${s.type === 'daily' ? 'calendar-day' : 'calendar-week'} text-primary" style="font-size:1rem;"></i>
@@ -976,12 +1190,12 @@ function renderSchedules(list) {
                 <input class="form-check-input" type="checkbox" ${s.enabled ? 'checked' : ''}
                        onchange="toggleSchedule('${s.id}')" style="cursor:pointer;">
             </div>
-            <button class="btn btn-sm btn-link text-danger p-0" onclick="deleteSchedule('${s.id}', '${scheduleLabel(s)}')" title="Remove">
+            <button class="btn btn-sm btn-link text-danger p-0"
+                    onclick="deleteSchedule('${s.id}', '${scheduleLabel(s).replace(/'/g, "\\'")}')" title="Remove">
                 <i class="bi bi-trash"></i>
             </button>
         </div>`).join('');
 }
-
 function addSchedule() {
     const type = document.getElementById('sched-type').value;
     const time = document.getElementById('sched-time').value;
@@ -989,44 +1203,31 @@ function addSchedule() {
     const msg  = document.getElementById('sched-msg');
     if (!time) { msg.textContent = 'Please select a time.'; msg.className = 'mt-2 text-danger'; return; }
     fetch('/api/schedules', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ type, time, day })
     })
     .then(r => r.json())
     .then(data => {
-        if (data.error) {
-            msg.textContent = data.error; msg.className = 'mt-2 text-danger';
-        } else {
-            msg.textContent = 'Schedule added.'; msg.className = 'mt-2 text-success';
-            loadSchedules();
-            setSchedTimeNow();
-            setTimeout(() => { msg.textContent = ''; }, 3000);
-        }
+        if (data.error) { msg.textContent = data.error; msg.className = 'mt-2 text-danger'; }
+        else { msg.textContent = 'Schedule added.'; msg.className = 'mt-2 text-success'; loadSchedules(); setSchedTimeNow(); setTimeout(() => { msg.textContent = ''; }, 3000); }
     })
     .catch(() => { msg.textContent = 'Failed — restart server and try again.'; msg.className = 'mt-2 text-danger'; });
 }
-
 function deleteSchedule(id, label) {
     if (!confirm(`Remove schedule "${label}"?\nThis cannot be undone.`)) return;
-    fetch(`/api/schedules/${id}`, { method: 'DELETE' })
-        .then(() => loadSchedules());
+    fetch(`/api/schedules/${id}`, { method: 'DELETE' }).then(() => loadSchedules());
 }
-
 function toggleSchedule(id) {
-    fetch(`/api/schedules/${id}/toggle`, { method: 'POST' })
-        .then(r => r.json())
-        .then(() => loadSchedules());
+    fetch(`/api/schedules/${id}/toggle`, { method: 'POST' }).then(r => r.json()).then(() => loadSchedules());
 }
 
-// --- Resend report ---
+// ── Resend report ──────────────────────────────────────────────────────────
 function resendReport() {
     const btn = document.getElementById('btn-email-report');
     btn.disabled = true;
     btn.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span>';
     fetch('/api/send-email', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ instance: getSelectedInstance() })
     })
     .then(r => r.json())
@@ -1035,19 +1236,75 @@ function resendReport() {
         else showToast('Report queued for sending!', true);
     })
     .catch(() => showToast('Email send failed — check server.', false))
-    .finally(() => {
-        btn.disabled = false;
-        btn.innerHTML = '<i class="bi bi-envelope me-1"></i> Resend Report';
-    });
+    .finally(() => { btn.disabled = false; btn.innerHTML = '<i class="bi bi-envelope me-1"></i>Resend Report'; });
 }
 
-let panelCollapsed = false;
-function togglePanel() {
-    panelCollapsed = !panelCollapsed;
-    const content = document.querySelector('#main-tabs-card .tab-content');
-    const icon = document.getElementById('collapse-icon');
-    content.style.display = panelCollapsed ? 'none' : '';
-    icon.className = panelCollapsed ? 'bi bi-chevron-down' : 'bi bi-chevron-up';
+// ── Export CSV (respects active filters) ──────────────────────────────────
+function exportFilteredCsv() {
+    const tf = document.getElementById('filter-tenant').value.toLowerCase();
+    const sf = document.getElementById('filter-status').value;
+
+    const filtered = allResults.filter(r =>
+        (!tf || (r.tenant || '').toLowerCase() === tf) &&
+        (!sf || r.status === sf)
+    );
+
+    if (!filtered.length) { alert('No data matches the current filters.'); return; }
+
+    const headers = ['Tenant', 'Application', 'API Count', 'SQL Count', 'Difference', 'Status'];
+    const csvRows = filtered.map(r => [
+        r.tenant,
+        r.application,
+        r.list_count >= 0 ? r.list_count : '',
+        r.sql_count  >= 0 ? r.sql_count  : '',
+        r.difference || 0,
+        r.status
+    ]);
+
+    const csv = [headers, ...csvRows]
+        .map(row => row.map(v => `"${String(v).replace(/"/g, '""')}"`).join(','))
+        .join('\r\n');
+
+    // Build filename to reflect active filters
+    const tenantPart  = tf ? `_${tf}` : '';
+    const statusPart  = sf ? `_${sf}` : '';
+    const filename = `Summary Report${tenantPart}${statusPart || '_All'}.csv`;
+
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const url  = URL.createObjectURL(blob);
+    const a    = document.createElement('a');
+    a.href = url; a.download = filename; a.click();
+    URL.revokeObjectURL(url);
+}
+
+// ── Helpers ────────────────────────────────────────────────────────────────
+function show(id) {
+    document.getElementById(id).style.display = 'block';
+}
+function hide(id) { document.getElementById(id).style.display = 'none'; }
+
+function setButtonsDisabled(v) {
+    ['btn-validate-all', 'btn-validate-one', 'btn-run-one'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.disabled = v;
+    });
+}
+function esc(str) {
+    return String(str).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+function setCsvReady(ready) {
+    ['btn-export-csv', 'btn-email-report'].forEach(id => {
+        const btn = document.getElementById(id);
+        if (!btn) return;
+        if (ready) { btn.classList.remove('disabled'); btn.removeAttribute('aria-disabled'); }
+        else { btn.classList.add('disabled'); btn.setAttribute('aria-disabled', 'true'); }
+    });
+}
+function showToast(message, isSuccess = true) {
+    const toast = document.getElementById('success-toast');
+    toast.className = `toast align-items-center text-white border-0 ${isSuccess ? 'bg-success' : 'bg-danger'}`;
+    document.getElementById('toast-message').textContent = message;
+    bootstrap.Toast.getOrCreateInstance(toast, { delay: 5000 }).show();
 }
 </script>
 </body>

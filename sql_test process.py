@@ -19,11 +19,32 @@ from test_process import _call_count_url, _log, get_token
 # SQL Server connection.
 # ============================================================================
 DB_DRIVER = "{ODBC Driver 17 for SQL Server}"
-DB_SERVER = "devehswatchind.cxusmedxl659.ap-south-1.rds.amazonaws.com"
-DB_NAME = "EHSWatchV3Q01_ReportService"
-DB_USER = "devuser"
-DB_PASSWORD = "Ehswatch-Exceego"
-DB_TRUSTED_AUTH = False  # True = Windows auth (ignores DB_USER / DB_PASSWORD)
+DB_TRUSTED_AUTH = False  # True = Windows auth (ignores user / password)
+
+DB_CONFIGS: dict[str, dict] = {
+    "demo": {
+        "server":   "devehswatchind.cxusmedxl659.ap-south-1.rds.amazonaws.com",
+        "name":     "EHSWatchV3Q01_ReportService",
+        "user":     "devuser",
+        "password": "Ehswatch-Exceego",
+    },
+    "dev": {
+        "server":   "devehswatchind.cxusmedxl659.ap-south-1.rds.amazonaws.com",
+        "name":     "EHSWatchV3D01_ReportService",
+        "user":     "devuser",
+        "password": "Ehswatch-Exceego",
+    },
+}
+
+_active_db_config: dict = DB_CONFIGS["demo"]
+
+
+def set_active_instance(instance: str) -> None:
+    global _active_db_config
+    cfg = DB_CONFIGS.get(instance)
+    if cfg is None:
+        raise ValueError(f"No DB config for instance '{instance}'. Available: {list(DB_CONFIGS)}")
+    _active_db_config = cfg
 
 # Per-tenant schema prefix. Each tenant's data lives in a schema named
 # 's<tenant>' (e.g. tenant 'albaraka' -> schema 'salbaraka').
@@ -141,6 +162,18 @@ APP_SQL_QUERIES: dict[str, str] = {
     "ofis": (
         "SELECT COUNT(*) AS count FROM {schema}.Ofis WHERE IsDeleted = 0"
     ),
+    # Legal Register
+    "legal_register": (
+        "SELECT COUNT(*) AS count FROM {schema}.LegalRegisterDetail WHERE IsDeleted = 0"
+    ),
+    # Communications
+    "communications": (
+        "SELECT COUNT(*) AS count FROM {schema}.CommunicationsManagements WHERE IsDeleted = 0"
+    ),
+    # Emergency Response Drills
+    "emergency_response_drills": (
+        "SELECT COUNT(*) AS count FROM {schema}.EmergencyResponseDrills WHERE IsDeleted = 0"
+    ),
 }
 
 # Per-tenant SQL overrides — checked first before APP_SQL_QUERIES.
@@ -178,8 +211,15 @@ TENANT_SPECIFIC_SQL_QUERIES: dict[str, dict[str, str]] = {
         "mocnonconformances": (
             "SELECT COUNT(*) AS count FROM {schema}.MocNonconformanceDetails"
         ),
-        "riskmanagements": (
-            "SELECT COUNT(*) AS count FROM {schema}.MocRiskAssessment"
+    },
+    "sos": {
+        "trainingmanagements": (
+            "SELECT COUNT(*) AS count FROM {schema}.TrainingMatrices WHERE IsDeleted = 0"
+        ),
+    },
+    "base": {
+        "hsemonthlystatistics": (
+            "SELECT COUNT(*) AS count FROM {schema}.HSEMonthlyStatistics WHERE IsDeleted = 0"
         ),
     },
 }
@@ -263,7 +303,7 @@ TENANT_SPECIFIC_ENDPOINTS: dict[str, dict[str, dict[str, str]]] = {
     "synergies": {
         "hsemonthlystatistics": {
             "list_endpoint": "/api/incident-service/h-sEMonthly-statistics-uNified/hse-monthly-Statistics_list_post",
-            "list_method": "POST",
+            "list_method": "POST",  
         },
     },
     "albaraka": {
@@ -308,6 +348,44 @@ TENANT_SPECIFIC_ENDPOINTS: dict[str, dict[str, dict[str, str]]] = {
             "list_method": "POST",
         },
     },
+    "base": {
+        "trainingmanagements": {
+            "list_endpoint": "/api/tM-service/training-matrices/training-matrix_list?filterText=&extraProperties=%5B%5D&viewArchievedData=&showDataUptoTwoMonths=false&skipCount=0&maxResultCount=100",
+            "list_method": "GET",
+        },
+        "observations": {
+            "list_endpoint": "/api/observations-service/observations/observation_list-post",
+            "list_method": "POST",
+        },
+        "actionmanagements": {
+            "list_endpoint": "/api/action-service/action-managements/actions_list-post",
+            "list_method": "POST",
+        },
+        "auditsmanagements": {
+            "list_endpoint": "/api/inspection-service/audits-managements/audit_service_list_post",
+            "list_method": "POST",
+        },
+        "customercomplaints": {
+            "list_endpoint": "/api/customer-service/customer-complaint-details/customerComplaint-detail_list_post",
+            "list_method": "POST",
+        },
+        "hseplandetails": {
+            "list_endpoint": "/api/hSEPlans-service/h-sEPlan-details/hSEPlan-detail_list?filterText=&recordNo=&organizationUnitId=&hSEPlanStartDateMin=&hSEPlanStartDateMax=&hSEPlanEndDateMin=&hSEPlanEndDateMax=&createdBy=&dateCreatedMin=&dateCreatedMax=&viewArchievedData=&skipCount=0&maxResultCount=15",
+            "list_method": "GET",
+        },
+        "eightdreports": {
+            "list_endpoint": "/api/nCR-service/eight-dReports/eightDReport_service_list-post",
+            "list_method": "POST",
+        },
+        "hsemonthlystatistics": {
+            "list_endpoint": "/api/incident-service/h-sEMonthly-statisticss/hse-Statistics_list_post",
+            "list_method": "POST",
+        },
+        "nonconformances": {
+            "list_endpoint": "/api/nCR-service/nonconformance-details/ncr_service_list_post",
+            "list_method": "POST",
+        },
+    },
 }
 
 
@@ -325,14 +403,15 @@ APP_METHOD_OVERRIDES: dict[str, str] = {
 
 
 def _build_connection_string() -> str:
+    cfg = _active_db_config
     if DB_TRUSTED_AUTH:
         return (
-            f"DRIVER={DB_DRIVER};SERVER={DB_SERVER};DATABASE={DB_NAME};"
+            f"DRIVER={DB_DRIVER};SERVER={cfg['server']};DATABASE={cfg['name']};"
             f"Trusted_Connection=yes;"
         )
     return (
-        f"DRIVER={DB_DRIVER};SERVER={DB_SERVER};DATABASE={DB_NAME};"
-        f"UID={DB_USER};PWD={DB_PASSWORD};"
+        f"DRIVER={DB_DRIVER};SERVER={cfg['server']};DATABASE={cfg['name']};"
+        f"UID={cfg['user']};PWD={cfg['password']};"
     )
 
 

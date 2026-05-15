@@ -1,0 +1,13 @@
+tenant,application,list_count,sql_count,difference,status
+alsumri,observations,35,35,0,PASS
+alsumri,actionmanagements,20,19,1,FAIL
+alsumri,auditsmanagements,5,5,0,PASS
+alsumri,customercomplaints,1,1,0,PASS
+alsumri,hseplandetails,5,5,0,PASS
+alsumri,incidentmanagement,2,2,0,PASS
+alsumri,inspectionmanagements,10,10,0,PASS
+alsumri,vehicle_inspections,19,19,0,PASS
+alsumri,meetingmanagements,8,8,0,PASS
+alsumri,riskmanagements,13,13,0,PASS
+alsumri,mocnonconformances,3,3,0,PASS
+alsumri,trainingmanagements,2,2,0,PASS

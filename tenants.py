@@ -12,6 +12,12 @@ DEFAULT_EXCEL_CREDENTIALS_PATH = r"C:\Users\mojagu.CORP\Downloads\Demo site cred
 DEFAULT_EXCEL_TEMPLATE_PATH = r"C:\Users\mojagu.CORP\Downloads\Template.xlsx"
 DEFAULT_TENANT_MODULES_JSON = r"C:\Users\mojagu.CORP\Downloads\tenants_with_modules_updated.json"
 
+# Per-instance credentials Excel files — add new instances here.
+INSTANCE_CREDENTIALS_PATHS: dict[str, str] = {
+    "demo": r"C:\Users\mojagu.CORP\Downloads\Demo site credentials.xlsx",
+    "dev":  r"C:\Users\mojagu.CORP\Downloads\DEV site credentials.xlsx",
+}
+
 # Maps module names from the JSON (lowercased, stripped) -> app key used in API/SQL config.
 MODULE_NAME_TO_APP_KEY: dict[str, str] = {
     "action tracker":                   "actionmanagements",

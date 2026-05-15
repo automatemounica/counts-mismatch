@@ -19,7 +19,7 @@ from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from typing import Any
 
-from flask import Flask, Response, jsonify, render_template, request, send_file
+from flask import Flask, Response, jsonify, render_template, request, send_file, session, redirect, url_for
 
 # ---------------------------------------------------------------------------
 # Load "sql_test process.py" — filename has a space, so can't import directly.
@@ -35,7 +35,7 @@ _spec = importlib.util.spec_from_file_location(
 stp = importlib.util.module_from_spec(_spec)
 _spec.loader.exec_module(stp)
 
-from tenants import load_tenants_for_sql_mode, TENANTS  # noqa: E402
+from tenants import load_tenants_for_sql_mode, TENANTS, INSTANCE_CREDENTIALS_PATHS  # noqa: E402
 
 # ---------------------------------------------------------------------------
 # Email config — set EMAIL_PASSWORD before use
@@ -84,7 +84,8 @@ def _all_recipients() -> list[str]:
     return result
 
 
-def _build_and_send_email(instance: str, rows: list, csv_path: str | None) -> None:
+def _build_and_send_email(instance: str, rows: list, csv_path: str | None,
+                          started_at: str = "", finished_at: str = "", duration: str = "") -> None:
     """Build HTML report and send to all configured recipients."""
     to_list = _all_recipients()
     if not EMAIL_PASSWORD or not to_list or not rows:
@@ -109,58 +110,48 @@ def _build_and_send_email(instance: str, rows: list, csv_path: str | None) -> No
         elif r["status"] == "FAIL":
             tenant_map[t]["fail"] += 1
 
-    tenant_rows_html = "".join(
-        f'<tr style="background:{"#fff3f3" if s["fail"] > 0 else "#f3fff8"};">'
-        f'<td style="padding:8px 12px;border-bottom:1px solid #eee;">{t.capitalize()}</td>'
-        f'<td style="padding:8px 12px;border-bottom:1px solid #eee;text-align:center;">{s["total"]}</td>'
-        f'<td style="padding:8px 12px;border-bottom:1px solid #eee;text-align:center;color:#198754;font-weight:600;">{s["pass"]}</td>'
-        f'<td style="padding:8px 12px;border-bottom:1px solid #eee;text-align:center;color:#dc3545;font-weight:600;">{s["fail"]}</td>'
-        f'</tr>'
-        for t, s in sorted(tenant_map.items())
-    )
-
     inst_label = instance.capitalize()
     html_body = f"""<!DOCTYPE html>
 <html><body style="margin:0;padding:0;background:#f4f6f8;font-family:Arial,sans-serif;color:#333;">
 <div style="max-width:680px;margin:24px auto;background:#fff;border-radius:10px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,0.08);">
   <div style="background:linear-gradient(135deg,#1a7a4a,#27ae60);padding:24px 28px;">
     <h2 style="color:#fff;margin:0;font-size:1.25rem;">EHSWatch Report Validation</h2>
-    <p style="color:rgba(255,255,255,0.85);margin:4px 0 0;font-size:0.88rem;">Completed successfully &mdash; {inst_label} Instance</p>
   </div>
   <div style="padding:24px 28px;">
-    <p style="margin-top:0;">Hi,</p>
-    <p>The EHSWatch validation on the <strong>{inst_label}</strong> instance completed on <strong>{timestamp}</strong>.</p>
-    <table width="100%" style="border-collapse:separate;border-spacing:8px;margin:16px 0;">
-      <tr>
-        <td style="background:#f8f9fa;border:1px solid #e0e0e0;border-radius:6px;padding:14px;text-align:center;">
-          <div style="font-size:22px;font-weight:700;color:#333;">{total}</div>
-          <div style="font-size:11px;color:#888;margin-top:3px;">Total Checks</div>
-        </td>
-        <td style="background:#f8f9fa;border:1px solid #e0e0e0;border-radius:6px;padding:14px;text-align:center;">
-          <div style="font-size:22px;font-weight:700;color:#198754;">{passed}</div>
-          <div style="font-size:11px;color:#888;margin-top:3px;">PASS</div>
-        </td>
-        <td style="background:#f8f9fa;border:1px solid #e0e0e0;border-radius:6px;padding:14px;text-align:center;">
-          <div style="font-size:22px;font-weight:700;color:#dc3545;">{failed}</div>
-          <div style="font-size:11px;color:#888;margin-top:3px;">FAIL</div>
-        </td>
-        <td style="background:#f8f9fa;border:1px solid #e0e0e0;border-radius:6px;padding:14px;text-align:center;">
-          <div style="font-size:22px;font-weight:700;color:#1a7a4a;">{rate}%</div>
-          <div style="font-size:11px;color:#888;margin-top:3px;">Pass Rate</div>
-        </td>
-      </tr>
+    <p style="margin-top:0;">Hi All,</p>
+    <p>This is to inform you that the test case has been executed successfully for the <strong>{inst_label}</strong> instance. Please find the results below:</p>
+    <table style="font-size:0.82rem;color:#555;margin-bottom:12px;border-collapse:collapse;">
+      <tr><td style="padding:2px 10px 2px 0;font-weight:600;">Started&nbsp;at:</td><td>{started_at}</td></tr>
+      <tr><td style="padding:2px 10px 2px 0;font-weight:600;">Finished&nbsp;at:</td><td>{finished_at}</td></tr>
+      <tr><td style="padding:2px 10px 2px 0;font-weight:600;">Duration:</td><td>{duration}</td></tr>
     </table>
-    <h3 style="font-size:0.92rem;color:#444;margin:20px 0 10px;">Tenant Summary</h3>
-    <table width="100%" style="border-collapse:collapse;font-size:0.88rem;">
+    <table width="100%" style="border-collapse:collapse;font-size:0.88rem;margin-top:12px;">
       <thead><tr style="background:#1a7a4a;color:#fff;">
-        <th style="padding:8px 12px;text-align:left;">Tenant</th>
-        <th style="padding:8px 12px;text-align:center;">Apps</th>
-        <th style="padding:8px 12px;text-align:center;">PASS</th>
-        <th style="padding:8px 12px;text-align:center;">FAIL</th>
+        <th style="padding:10px 14px;text-align:left;">Tenant</th>
+        <th style="padding:10px 14px;text-align:center;">Total Apps</th>
+        <th style="padding:10px 14px;text-align:center;">PASS</th>
+        <th style="padding:10px 14px;text-align:center;">FAIL</th>
+        <th style="padding:10px 14px;text-align:center;">Pass Rate</th>
       </tr></thead>
-      <tbody>{tenant_rows_html}</tbody>
+      <tbody>{"".join(
+        f'<tr style="background:{"#fff3f3" if s["fail"] > 0 else "#f3fff8"};">'
+        f'<td style="padding:9px 14px;border-bottom:1px solid #eee;">{t.capitalize()}</td>'
+        f'<td style="padding:9px 14px;border-bottom:1px solid #eee;text-align:center;">{s["total"]}</td>'
+        f'<td style="padding:9px 14px;border-bottom:1px solid #eee;text-align:center;color:#198754;font-weight:600;">{s["pass"]}</td>'
+        f'<td style="padding:9px 14px;border-bottom:1px solid #eee;text-align:center;color:#dc3545;font-weight:600;">{s["fail"]}</td>'
+        f'<td style="padding:9px 14px;border-bottom:1px solid #eee;text-align:center;font-weight:600;">'
+        f'{round((s["pass"] / s["total"]) * 100) if s["total"] > 0 else 0}%</td>'
+        f'</tr>'
+        for t, s in sorted(tenant_map.items())
+      )}</tbody>
+      <tfoot><tr style="background:#f8f9fa;font-weight:700;">
+        <td style="padding:9px 14px;border-top:2px solid #ddd;">Total</td>
+        <td style="padding:9px 14px;border-top:2px solid #ddd;text-align:center;">{total}</td>
+        <td style="padding:9px 14px;border-top:2px solid #ddd;text-align:center;color:#198754;">{passed}</td>
+        <td style="padding:9px 14px;border-top:2px solid #ddd;text-align:center;color:#dc3545;">{failed}</td>
+        <td style="padding:9px 14px;border-top:2px solid #ddd;text-align:center;">{rate}%</td>
+      </tr></tfoot>
     </table>
-    <p style="margin-top:20px;color:#666;font-size:0.82rem;">Full details are attached as a CSV file.</p>
   </div>
   <div style="background:#f8f9fa;padding:12px 28px;border-top:1px solid #eee;font-size:0.75rem;color:#999;">
     EHSWatch Report Validation &mdash; Auto-generated &mdash; {timestamp}
@@ -169,7 +160,7 @@ def _build_and_send_email(instance: str, rows: list, csv_path: str | None) -> No
 </body></html>"""
 
     msg = MIMEMultipart("mixed")
-    msg["Subject"] = f"EHSWatch Validation Report — {inst_label} — {timestamp[:10]}"
+    msg["Subject"] = f"EHSWatch Validation Report — {inst_label} | ✅ {passed} PASS / ❌ {failed} FAIL"
     msg["From"]    = EMAIL_FROM
     msg["To"]      = ", ".join(to_list)
     msg.attach(MIMEText(html_body, "html"))
@@ -197,8 +188,12 @@ def _build_and_send_email(instance: str, rows: list, csv_path: str | None) -> No
 # Flask app
 # ---------------------------------------------------------------------------
 app = Flask(__name__)
+app.secret_key = "ehswatch-2024-secret-key"
 
-# ---------------------------------------------------------------------------
+# Login credentials (change as needed)
+APP_USERNAME = "admin"
+APP_PASSWORD = "ehs@2026"
+
 # ---------------------------------------------------------------------------
 # Instance config — add PROD values when available
 # ---------------------------------------------------------------------------
@@ -241,7 +236,10 @@ def _init_tenants():
         print(f"[web_app] Demo Excel load failed ({exc}). Using fallback TENANTS.")
         _runtime_tenants = TENANTS
     try:
-        _dev_tenants = load_tenants_for_sql_mode(domain="dev-ehswatch.com")
+        _dev_tenants = load_tenants_for_sql_mode(
+            credentials_excel_path=INSTANCE_CREDENTIALS_PATHS["dev"],
+            domain="dev-ehswatch.com",
+        )
         print(f"[web_app] Loaded {len(_dev_tenants)} dev tenants.")
     except Exception as exc:
         print(f"[web_app] Dev tenant load failed ({exc}). Dev instance unavailable.")
@@ -257,14 +255,17 @@ def _get_tenants_for_instance(instance: str) -> dict:
 LAST_RUN_FILE = os.path.join(BASE_DIR, "last_run.json")
 
 
-def _save_last_run(rows: list, csv_path: str | None) -> None:
+def _save_last_run(rows: list, csv_path: str | None,
+                   instance: str = "demo", mode: str = "Validate All") -> None:
     global _run_history
     entry = {
         "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+        "instance": instance,
+        "mode": mode,
         "rows": rows,
         "csv_path": csv_path or "",
     }
-    _run_history = ([entry] + _run_history)[:2]
+    _run_history = ([entry] + _run_history)[:3]
     try:
         with open(LAST_RUN_FILE, "w", encoding="utf-8") as f:
             json.dump(_run_history, f)
@@ -286,7 +287,7 @@ def _load_last_run() -> None:
                     "csv_path": data.get("csv_path", ""),
                 }]
             else:
-                _run_history = data[:2]
+                _run_history = data[:3]
             if _run_history:
                 _latest_rows = _run_history[0]["rows"]
                 _latest_csv_path = _run_history[0]["csv_path"] or None
@@ -315,14 +316,19 @@ def _run_validation_job(job_id: str, tenant_names: list[str], instance: str = "d
     if q is None:
         return
 
+    job_start = datetime.now()
+    _emit(q, "log", message=f"▶ Started at {job_start.strftime('%Y-%m-%d %H:%M:%S')}")
     all_rows: list[dict[str, Any]] = []
+
+    stp.set_active_instance(instance)
+    tenants_for_job = _get_tenants_for_instance(instance)
 
     for name in tenant_names:
         if _stop_requested:
             _emit(q, "log", message="⏹ Validation stopped by user.")
             break
 
-        tenant_cfg = _runtime_tenants.get(name)
+        tenant_cfg = tenants_for_job.get(name)
         if not tenant_cfg:
             _emit(q, "log", message=f"[{name}] Not found in config, skipping.")
             continue
@@ -402,8 +408,8 @@ def _run_validation_job(job_id: str, tenant_names: list[str], instance: str = "d
               } for r in tenant_rows])
 
     # Write CSV
-    timestamp = datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
-    csv_path = os.path.join(BASE_DIR, f"csv_file_summary_{timestamp}.csv")
+    csv_label = tenant_names[0] if len(tenant_names) == 1 else "Validate All"
+    csv_path = os.path.join(BASE_DIR, "CSV files _New", f"Summary Report_{instance}_{csv_label}.csv")
     try:
         stp._write_summary_csv(all_rows, csv_path)
         _emit(q, "log", message=f"CSV written: {os.path.basename(csv_path)}")
@@ -411,7 +417,8 @@ def _run_validation_job(job_id: str, tenant_names: list[str], instance: str = "d
         _emit(q, "log", message=f"CSV write error: {exc}")
         csv_path = None
 
-    _save_last_run(all_rows, csv_path)
+    run_mode = tenant_names[0] if len(tenant_names) == 1 else "Validate All"
+    _save_last_run(all_rows, csv_path, instance, run_mode)
 
     with _state_lock:
         global _latest_rows, _latest_csv_path, _validation_active
@@ -420,17 +427,29 @@ def _run_validation_job(job_id: str, tenant_names: list[str], instance: str = "d
         _validation_active = False
         _stop_requested = False
 
+    job_end = datetime.now()
+    elapsed = job_end - job_start
+    total_seconds = int(elapsed.total_seconds())
+    duration_str = f"{total_seconds // 60}m {total_seconds % 60}s" if total_seconds >= 60 else f"{total_seconds}s"
+
     total = len(all_rows)
     passed = sum(1 for r in all_rows if r["status"] == "PASS")
     failed = total - passed
-    _emit(q, "done", total=total, passed=passed, failed=failed)
+    _emit(q, "log", message=f"⏹ Finished at {job_end.strftime('%Y-%m-%d %H:%M:%S')} (took {duration_str})")
+    _emit(q, "done", total=total, passed=passed, failed=failed,
+          started_at=job_start.strftime("%Y-%m-%d %H:%M:%S"),
+          finished_at=job_end.strftime("%Y-%m-%d %H:%M:%S"),
+          duration=duration_str)
     q.put(None)  # sentinel — closes SSE stream
 
     # Auto-send email notification
     if EMAIL_PASSWORD:
         threading.Thread(
             target=_build_and_send_email,
-            args=(instance, all_rows, csv_path),
+            args=(instance, all_rows, csv_path,
+                  job_start.strftime("%Y-%m-%d %H:%M:%S"),
+                  job_end.strftime("%Y-%m-%d %H:%M:%S"),
+                  duration_str),
             daemon=True,
         ).start()
 
@@ -438,15 +457,38 @@ def _run_validation_job(job_id: str, tenant_names: list[str], instance: str = "d
 # ---------------------------------------------------------------------------
 # Routes
 # ---------------------------------------------------------------------------
+@app.route("/login", methods=["GET", "POST"])
+def login():
+    error = None
+    if request.method == "POST":
+        username = request.form.get("username", "").strip()
+        password = request.form.get("password", "")
+        if username == APP_USERNAME and password == APP_PASSWORD:
+            session["authenticated"] = True
+            return redirect(url_for("index"))
+        error = "Invalid username or password."
+    return render_template("login.html", error=error)
+
+
+@app.route("/logout")
+def logout():
+    session.pop("authenticated", None)
+    return redirect(url_for("login"))
+
+
 @app.route("/")
 def index():
+    if not session.get("authenticated"):
+        return redirect(url_for("login"))
     return render_template("index.html")
 
 
 @app.route("/api/tenants")
 def get_tenants():
+    instance = request.args.get("instance", "demo")
+    tenants = _get_tenants_for_instance(instance)
     result = {}
-    for name, cfg in _runtime_tenants.items():
+    for name, cfg in tenants.items():
         apps = sorted(cfg.get("api_config", {}).get("applications", {}).keys())
         result[name] = apps
     return jsonify(result)
@@ -511,24 +553,39 @@ def stream(job_id: str):
 
 @app.route("/api/last-results")
 def last_results():
+    instance = request.args.get("instance", "")
     with _state_lock:
         history = list(_run_history)
-        rows = list(_latest_rows)
-        csv_path = _latest_csv_path
-    runs = [
-        {
+    if instance:
+        history = [r for r in history if r.get("instance", "demo") == instance]
+    runs = []
+    for i, run in enumerate(history):
+        entry = {
             "timestamp": run["timestamp"],
+            "instance": run.get("instance", "demo"),
+            "mode": run.get("mode", "Validate All"),
             "count": len(run["rows"]),
-            "rows": run["rows"],
             "csv_available": bool(run["csv_path"] and os.path.exists(run["csv_path"])),
         }
-        for run in history
-    ]
+        if i == 0:
+            entry["rows"] = run["rows"]
+        runs.append(entry)
+    return jsonify({"runs": runs})
+
+
+@app.route("/api/run-rows/<int:index>")
+def run_rows(index: int):
+    instance = request.args.get("instance", "")
+    with _state_lock:
+        history = list(_run_history)
+    if instance:
+        history = [r for r in history if r.get("instance", "demo") == instance]
+    if index < 0 or index >= len(history):
+        return jsonify({"rows": [], "csv_available": False}), 404
+    run = history[index]
     return jsonify({
-        "runs": runs,
-        "rows": rows,
-        "csv_available": bool(csv_path and os.path.exists(csv_path)),
-        "count": len(rows),
+        "rows": run["rows"],
+        "csv_available": bool(run["csv_path"] and os.path.exists(run["csv_path"])),
     })
 
 
