@@ -4,7 +4,7 @@
 
 The Counts Mismatch Verification Tool is a Python-based automation solution designed to validate and compare dashboard counts, API counts, SQL Server data, and MongoDB data across multiple tenants and applications.
 
-The application helps identify count mismatches between different data sources and generates CSV summary reports for quick analysis.
+The application helps identify count mismatches between different data sources and generates CSV summary reports for quick analysis through a modern web-based interface.
 
 ---
 
@@ -20,6 +20,15 @@ The application helps identify count mismatches between different data sources a
 * Automated mismatch detection
 * Summary report generation
 * Configurable tenant and application mapping
+* Login page with authentication support
+* Modern tab-based UI navigation
+* Separate modules for:
+  * Schedules
+  * Reports
+  * Email Configurations
+  * Count Verification
+* Dev environment configuration and execution support
+* Improved execution monitoring and usability
 
 ---
 
@@ -42,10 +51,16 @@ The application helps identify count mismatches between different data sources a
 Counts Mismatch/
 │
 ├── templates/
-│   └── index.html
+│   ├── index.html
+│   ├── login.html
+│   ├── schedules.html
+│   ├── reports.html
+│   └── email_configurations.html
 │
 ├── static/
-│   └── logo.png
+│   ├── logo.png
+│   ├── styles.css
+│   └── scripts.js
 │
 ├── CSV files _New/
 │   └── Generated CSV reports
@@ -59,6 +74,7 @@ Counts Mismatch/
 ├── web_app.py
 ├── recipients.json
 ├── last_run.json
+├── requirements.txt
 └── README.md
 ```
 
@@ -127,40 +143,51 @@ http://127.0.0.1:5000
 ```
 
 ---
-
 # Functional Workflow
 
-1. Validate tenants from configuration files
-2. Generate authentication token
-3. Fetch API counts from configured endpoints
-4. Compare dashboard and API counts
-5. Compare SQL Server and MongoDB counts
-6. Identify mismatches
-7. Generate CSV summary reports
-8. Display execution results in web application
+1. User logs in through the Login Page.
+2. Validate tenants from the configured tenant and credential files.
+3. Generate authentication tokens for the selected tenant/environment.
+4. Fetch API counts dynamically from configured application endpoints.
+5. Compare dashboard counts with API response counts.
+6. Compare SQL Server and MongoDB counts for configured applications.
+7. Identify mismatches across Dashboard, API, SQL Server, and MongoDB data sources.
+8. Generate CSV summary reports with execution and mismatch details.
+9. Display execution status and results in the web application.
+10. Manage schedules, reports, and email configurations through the tab-based UI.
+11. Execute and monitor validations in the Dev environment before production usage.
 
 ---
 
 # Sample Use Cases
 
-* Dashboard count verification
-* Data consistency validation
-* Tenant-wise count monitoring
-* Automated mismatch reporting
-* Production/UAT validation
-* API data verification
+* Dashboard vs API count verification
+* SQL Server and MongoDB data consistency validation
+* Tenant-wise application monitoring
+* Automated mismatch identification and reporting
+* Production, UAT, and Dev environment validation
+* REST API data verification
+* Scheduled count verification execution
+* Email-based report and notification management
+* Multi-tenant monitoring and analysis
+* Execution tracking through web-based UI
 
 ---
 
 # Recommended Improvements
 
-* Add scheduler support
-* Add email notification feature
-* Add role-based authentication
-* Add live execution monitoring
-* Add export to Excel/PDF
-* Add automated retry handling
-* Add centralized logging
+* Add automated scheduler execution support
+* Add email notification and alert system
+* Implement role-based authentication and access control
+* Add live execution progress monitoring
+* Add export functionality for Excel and PDF reports
+* Implement automatic retry handling for failed executions
+* Add centralized logging and monitoring support
+* Add execution history and audit tracking
+* Add graphical dashboard analytics and charts
+* Add environment-wise execution management
+* Add configurable threshold-based mismatch alerts
+* Improve UI responsiveness and performance
 
 ---
 
